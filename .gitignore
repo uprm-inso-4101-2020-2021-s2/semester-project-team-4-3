@@ -1,0 +1,23 @@
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# dependencies
+timeroll-frontend/node_modules
+timeroll-frontend/.pnp
+timeroll-frontend/.pnp.js
+
+# testing
+timeroll-frontend/coverage
+
+# production
+timeroll-frontend/build
+
+# misc
+timeroll-frontend/.DS_Store
+timeroll-frontend/.env.local
+timeroll-frontend/.env.development.local
+timeroll-frontend/.env.test.local
+timeroll-frontend/.env.production.local
+
+timeroll-frontend/npm-debug.log*
+timeroll-frontend/yarn-debug.log*
+timeroll-frontend/yarn-error.log*
