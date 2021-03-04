@@ -25,14 +25,14 @@ export default function MaterialUIPickers() {
                     format="MM/dd/yyyy"
                     margin="normal"
                     id="date-picker-inline"
-                    label="Date picker inline"
+                    label="Today"
                     value={selectedDate}
                     onChange={handleDateChange}
                     KeyboardButtonProps={{
                         'aria-label': 'change date',
                     }}
                 />
-                <KeyboardDatePicker
+                {/* <KeyboardDatePicker
                     margin="normal"
                     id="date-picker-dialog"
                     label="Date picker dialog"
@@ -52,7 +52,7 @@ export default function MaterialUIPickers() {
                     KeyboardButtonProps={{
                         'aria-label': 'change time',
                     }}
-                />
+                /> */}
             </Grid>
         </MuiPickersUtilsProvider>
     );
