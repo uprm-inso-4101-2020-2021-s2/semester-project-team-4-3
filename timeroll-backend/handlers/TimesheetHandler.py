@@ -25,9 +25,10 @@ class TimesheetHandler:
         result = {}
         result['wtid'] = row[0]
         result['worktype'] = row[1]
-        result['hours'] = row[2]
-        result['note'] = row[3]
-        result['wid'] = row[4]
+        result['start_time'] = row[2]
+        result['end_time'] = row[3]
+        result['note'] = row[4]
+        result['wid'] = row[5]
         return result
 
     def getTimesheet(self, eid):
@@ -44,17 +45,17 @@ class TimesheetHandler:
         tsdictionary = {}
         workdaylist = wdao.getWorkDays(tid,startdate,enddate)
         for row in workdaylist:
-            workdays.append(row[0])
-            key = "Workday " + str(row[0])
+            workdays.append(row[1])
+            key = str(row[1])
             wdictionary = self.build_workday_dict(row)
             tsdictionary[key] = wdictionary
 
         for entry in workdays:
-            tasks = tdao.getWorkTasks(entry)
+            tasks = tdao.getWorkTasks(tsdictionary[entry]['wid'])
             for item in tasks:
                 taskid = "Task "  + str(item[0])
                 task = self.build_worktask_dict(item)
-                tsdictionary["Workday " + str(entry)][taskid] = task
+                tsdictionary[entry][taskid] = task
 
 
         print(tsdictionary)
@@ -67,7 +68,6 @@ class TimesheetHandler:
         tdao = TasksDAO()
         wdao = WorkdayDAO()
         tsdao = TimesheetDAO()
-
         timesheet = tsdao.getTimesheet(eid, day)
         tid = timesheet[0]
         startdate = timesheet[1]
@@ -77,17 +77,21 @@ class TimesheetHandler:
         tsdictionary = {}
         workdaylist = wdao.getWorkDays(tid, startdate, enddate)
         for row in workdaylist:
-            workdays.append(row[0],row[1])
-            tsdictionary.append(row[1])
+            workdays.append(row[1])
+            key = str(row[1])
+            wdictionary = self.build_workday_dict(row)
+            tsdictionary[key] = wdictionary
 
-        for wid, cdate in workdays:
-            tasks = tdao.getWorkTasks(wid)
+        for entry in workdays:
+            tasks = tdao.getWorkTasks(tsdictionary[entry]['wid'])
             for item in tasks:
-                task = self.build_workday_dict(item)
-                tsdictionary[cdate].append(task)
+                taskid = "Task " + str(item[0])
+                task = self.build_worktask_dict(item)
+                tsdictionary[entry][taskid] = task
+
+        print(tsdictionary)
 
         return jsonify(Timesheet=tsdictionary)
-
 
 
 

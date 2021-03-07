@@ -18,16 +18,20 @@ def home():
 
 @app.route('/timesheet', methods=['GET','POST','UPDATE'])
 def manageTimesheet():
-    eid = 0
+    eid = 0                             #Placeholder eid. Replace when accounts structure has been established
+    day = request.form.get("day")
     if request.method == 'GET':
-    #     if day:
-    #          return TimesheetHandler().getTimesheetByDate(eid, day)
-    #     else:
-        return TimesheetHandler().getTimesheet(1)
+        if day:
+             return TimesheetHandler().getTimesheetByDate(eid, day)
+        else:
+            return TimesheetHandler().getTimesheet(1)
+
     elif request.method == 'POST':
         return TimesheetHandler().insertValues(request.form.eid, request.form)
+
     elif request.method == 'UPDATE':
         return TimesheetHandler().updateValues(request.form.eid,request.form)
+
     else:
         return jsonify(Error="Method not allowed."),405
 
