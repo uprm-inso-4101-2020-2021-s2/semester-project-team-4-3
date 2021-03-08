@@ -9,8 +9,28 @@ export default class TimeSheetTable extends Component {
             message: "",
             items: [{}, {}, {}, {}, {}],
             counter: 0,
-            totals: {}
+            totals: {
+                "mon": "0",
+                "tue": "0",
+                "wed": "0",
+                "thu": "0",
+                "fri": "0",
+                "sat": "0"
+            },
+            workTypes: []
         }
+    }
+
+    componentDidMount() {
+        this.setState({
+            workTypes: [
+                { id: 'NONE', name: 'None' },
+                { id: 'SECRT', name: 'Secretarial' },
+                { id: 'LABTR', name: 'Laboratorio' },
+                { id: 'FACTU', name: 'Facturacion' },
+                { id: 'MUEST', name: 'Toma de Muestra' }
+            ]
+        });
     }
 
     tableStyle = {
@@ -23,6 +43,7 @@ export default class TimeSheetTable extends Component {
         this.setState({
             message: event.target.value
         });
+
     }
 
     handleClick() {
@@ -64,16 +85,15 @@ export default class TimeSheetTable extends Component {
         var workEntry = {
             "type": this.state.message,
             "mon": "0",
-            "tue": "1",
-            "wed": "2",
-            "thu": "4",
-            "fri": "5",
-            "sat": "6"
+            "tue": "0",
+            "wed": "0",
+            "thu": "0",
+            "fri": "0",
+            "sat": "0"
         };
         var items = this.state.items;
 
         items[counter] = workEntry;
-        // items.push(workEntry);
 
         counter = counter + 1;
 
@@ -83,24 +103,20 @@ export default class TimeSheetTable extends Component {
         });
 
         console.log(this.state.items);
+
     }
 
-    handleWorkHoursChanged(i, workday, event) {
-        var items = this.state.items;
+    recalculateHours(workday, items) {
         var totals = this.state.totals;
-        var value = event.target.value;
-        value = value.replace(/\D/g, "");
-
-        console.log(items);
-
-        items[i][workday] = value;
-        console.log(items[i].workday);
-        console.log("workday ", workday, " value: ", items[i[workday]]);
+        var hours;
 
         var total = 0;
         items.map((item, index) => {
-            total = items[index][workday] === undefined ?
-                parseFloat(0 + total) : parseFloat(items[index][workday] + total);
+            hours = Number(items[index][workday])
+            console.log(typeof hours);
+            total = Object.entries(item).length === 0 && item.constructor === Object ?
+                total + 0 : total + hours;
+            console.log("total: " + total);
         });
 
         totals[workday] = total
@@ -109,9 +125,58 @@ export default class TimeSheetTable extends Component {
             items: items,
             totals: totals
         });
+
         this.renderTotalRow();
-        console.log(this.state.items);
     }
+
+    handleWorkHoursChanged(i, workday, event) {
+        var items = this.state.items;
+        var value = event.target.value;
+        value = value.replace(/\D/g, "");
+
+        console.log(items);
+
+        items[i][workday] = value;
+
+        this.recalculateHours(workday, items);
+    }
+
+    // handleWorkHoursChanged(i, workday, event) {
+    //     var items = this.state.items;
+    //     var totals = this.state.totals;
+    //     var value = event.target.value;
+    //     value = value.replace(/\D/g, "");
+    //     var hours;
+
+    //     console.log(items);
+
+    //     items[i][workday] = value;
+    //     console.log(items[i].workday);
+    //     console.log("workday ", workday, " value: ", items[i][workday]);
+
+    //     var total = 0;
+    //     items.map((item, index) => {
+    //         hours = Number(items[index][workday])
+    //         console.log(typeof hours);
+    //         total = Object.entries(item).length === 0 && item.constructor === Object ?
+    //             total + 0 : total + hours;
+    //         // total = total + hours;
+    //         // Object.entries(obj).length === 0 && obj.constructor === Object
+    //         // total = hours === NaN ?
+    //         //     Number(0 + total) : Number(hours + total);
+    //         console.log("total: " + total);
+    //     });
+
+    //     totals[workday] = total
+
+    //     this.setState({
+    //         items: items,
+    //         totals: totals
+    //     });
+
+    //     this.renderTotalRow();
+    //     // console.log(this.state.items);
+    // }
 
     renderTotalRow() {
         var context = this;
@@ -148,6 +213,7 @@ export default class TimeSheetTable extends Component {
         var context = this;
 
         return this.state.items.map(function (o, i) {
+
             return (
                 <tr key={"item-" + i} className="tableRows">
                     <td className="workTypeColumn">
@@ -155,6 +221,9 @@ export default class TimeSheetTable extends Component {
                             type="text"
                             value={o["type"]}
                         > {o["type"]} </span>
+                        {/* <select>
+                            {optionItems}
+                        </select> */}
                     </td>
                     <td>
                         <input
@@ -211,6 +280,11 @@ export default class TimeSheetTable extends Component {
     }
 
     render() {
+
+        let work = this.state.workTypes;
+        let optionItems = work.map((types) =>
+            <option key={types.id}>{types.id}</option>
+        );
         return (
             <div>
                 <table style={this.tableStyle}>
@@ -232,8 +306,11 @@ export default class TimeSheetTable extends Component {
                     </tbody>
                 </table>
                 <hr />
-                <span className="addWork"> Add New Work Code: </span>
-                <input type="text" onChange={this.updateMessage.bind(this)} />
+                <span className="addWork"> Add Work Task done: </span>
+                {/* <input type="text" onChange={this.updateMessage.bind(this)} /> */}
+                <select onChange={this.updateMessage.bind(this)}>
+                    {optionItems}
+                </select>
                 <button onClick={this.handleAddWork.bind(this)}>
                     Add
                     </button>
