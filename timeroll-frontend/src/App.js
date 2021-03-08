@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import NavBar from './components/navbar';
 import SideNavBar from './components/sidenavbar';
-import ResponsiveDatePickers from './components/calendarPicker';
+import MaterialUIPickers from './components/calendarPicker';
+import Timesheet from './components/timesheet';
+
 import './App.css';
 
 class App extends Component {
@@ -19,9 +21,8 @@ class App extends Component {
         <NavBar />
         <div className="bodyContainer" id="wrapper">
           <SideNavBar />
-          <div id="body" className="body">
-            <ResponsiveDatePickers />
-          </div>
+          <Timesheet />
+
         </div>
       </React.Fragment>
     );

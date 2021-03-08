@@ -68,3 +68,53 @@
   height: 93%;
   overflow:hidden;
 }
+
+.datepickers {
+  padding:5px;
+  display: flex;
+  flex-direction: row;
+}
+
+input{
+  width: 100px;
+  margin: 10px;
+}
+
+.tableDataRows {
+  width: 100px;
+  margin: 10px;
+}
+
+th{
+  padding: 5px;
+  font-size: 11px;
+  
+}
+
+tr {
+  border-bottom: 1px solid gray;
+  margin-top: 5px;
+  padding-top: 5px;
+  padding-bottom: 10px;
+  margin-bottom: 5px;
+}
+
+td {
+  padding: 10px;
+}
+
+.workTypeColumn {
+  padding-right: 5px;
+  margin-right: 5px;
+  min-width: 120px;
+}
+
+.addWork {
+  padding: 10px;
+  margin: 10px;
+}
+
+.tableRows {
+  margin: 10px;
+  padding:10px
+}
