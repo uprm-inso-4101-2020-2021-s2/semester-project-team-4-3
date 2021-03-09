@@ -43,22 +43,26 @@ class TimesheetHandler:
 
         workdays = []
         tsdictionary = {}
+        i=0;
+        weekdays = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
         workdaylist = wdao.getWorkDays(tid,startdate,enddate)
         for row in workdaylist:
-            workdays.append(row[1])
-            key = str(row[1])
+            workdays.append(row[0])
+            key = weekdays[i]
+            i = i+1
             wdictionary = self.build_workday_dict(row)
             tsdictionary[key] = wdictionary
 
-        for entry in workdays:
+
+        for entry in weekdays:
+            tasklist = []
             tasks = tdao.getWorkTasks(tsdictionary[entry]['wid'])
+
             for item in tasks:
-                taskid = "Task "  + str(item[0])
                 task = self.build_worktask_dict(item)
-                tsdictionary[entry][taskid] = task
+                tasklist.append(task)
 
-
-        print(tsdictionary)
+            tsdictionary[entry]["tasks"] = tasklist
 
 
         return jsonify(Timesheet = tsdictionary)
@@ -75,21 +79,25 @@ class TimesheetHandler:
 
         workdays = []
         tsdictionary = {}
+        i = 0;
+        weekdays = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
         workdaylist = wdao.getWorkDays(tid, startdate, enddate)
         for row in workdaylist:
-            workdays.append(row[1])
-            key = str(row[1])
+            workdays.append(row[0])
+            key = weekdays[i]
+            i = i + 1
             wdictionary = self.build_workday_dict(row)
             tsdictionary[key] = wdictionary
 
-        for entry in workdays:
+        for entry in weekdays:
+            tasklist = []
             tasks = tdao.getWorkTasks(tsdictionary[entry]['wid'])
-            for item in tasks:
-                taskid = "Task " + str(item[0])
-                task = self.build_worktask_dict(item)
-                tsdictionary[entry][taskid] = task
 
-        print(tsdictionary)
+            for item in tasks:
+                task = self.build_worktask_dict(item)
+                tasklist.append(task)
+
+            tsdictionary[entry]["tasks"] = tasklist
 
         return jsonify(Timesheet=tsdictionary)
 
