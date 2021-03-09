@@ -76,8 +76,10 @@
 }
 
 input{
-  width: 100px;
-  margin: 10px;
+  width: 70px;
+  
+  font-size: small;
+  line-height: 10px;
 }
 
 .tableDataRows {
@@ -101,12 +103,13 @@ tr {
 
 td {
   padding: 10px;
+  font-size: small;
 }
 
-.workTypeColumn {
-  padding-right: 5px;
-  margin-right: 5px;
-  min-width: 120px;
+.workInputContainer {
+  display: flex;
+  flex-direction: row;
+  padding-top: 3px;
 }
 
 .addWork {
@@ -118,3 +121,41 @@ td {
   margin: 10px;
   padding:10px
 }
+
+.tableRows span {
+  margin-right: 5px;
+  margin-top: 2px;
+}
+
+.workTypeColumn {
+  padding-right: 5px;
+  margin-right: 5px;
+  min-width: 120px;
+}
+
+.addWorkContainer {
+  display: flex;
+  flex-direction: row;
+  margin-left: 50px;
+}
+
+.workContainerBtn {
+  margin-left: 50px;
+  height: 20px;
+  text-align: center;
+  width: 50px;
+  height: 50px;
+  border-radius: 80%;
+  display: inline-flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  font-size: 12px;
+  background-color: #8FBC8F;
+  text-decoration: none
+}
+
+.workContainerBtn:hover{
+  background-color: #D2E4D2;
+}
+

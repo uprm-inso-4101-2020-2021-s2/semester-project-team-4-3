@@ -21,3 +21,5 @@ timeroll-frontend/.env.production.local
 timeroll-frontend/npm-debug.log*
 timeroll-frontend/yarn-debug.log*
 timeroll-frontend/yarn-error.log*
+
+node_modules
