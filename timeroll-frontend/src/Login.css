@@ -1,0 +1,36 @@
+.div-login{
+    width: 300px;
+    height: 400px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    margin: 0 auto;
+    border: 1px solid #dbdbdb;
+    border-radius: 5px;
+    padding: 10px;
+    margin-top: 10vh;
+}
+
+.div-login-logo{
+    height: 200px;
+    width: 200px;
+    align-self: center;
+}
+
+input{
+    width: 95%;
+    border: 1px solid #dbdbdb;
+    padding: 5px;
+    margin: 2px 0;
+    border-radius: 5px;
+    background-color: #fafafa;
+    box-shadow: none;
+}
+
+button{
+    width: 100%;
+    margin: 5px 0;
+    background-color: dodgerblue;
+    padding: 5px;
+
+}
