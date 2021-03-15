@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import TimePicker from './timepicker';
+import axios from "axios";
+import SimpleDialogDemo from './dialog'
 import '../App.css';
 
 export default class TimeSheetTable extends Component {
@@ -10,8 +12,8 @@ export default class TimeSheetTable extends Component {
             message: "",
             items: [],
             counter: 0,
-            start_hour: new Date('2014-08-18T21:11:54'),
-            end_hour: new Date('2014-08-18T21:11:54'),
+            start_hour: new Date(),
+            end_hour: new Date(),
             totals: {
                 "mon": 0,
                 "tue": 0,
@@ -89,47 +91,19 @@ export default class TimeSheetTable extends Component {
         var end = this.state.end_hour;
         var weekdays = this.state.weekdays;
 
-        var start_time = String(start.getHours() + ":" + start.getMinutes());
-        var end_time = String(end.getHours() + ":" + end.getMinutes());
         var today = weekdays[new Date().getDay()];
-        console.log(today);
+        console.log(start);
+
+        var workType = this.state.message !== "" ? this.state.message : "NONE"
 
         var workEntry = {
-            "type": this.state.message,
+            "type": workType,
             [today]: {
-                "start_hour": start_time,
-                "end_hour": end_time
+                "start_hour": start.toISOString(),
+                "end_hour": end.toISOString()
             }
         };
         console.log(workEntry)
-
-        // var workEntry = {
-        //     "type": this.state.message,
-        //     "mon": {
-        //         "start_hour": "0",
-        //         "end_hour": "0"
-        //     },
-        //     "tue": {
-        //         "start_hour": "0",
-        //         "end_hour": "0"
-        //     },
-        //     "wed": {
-        //         "start_hour": "0",
-        //         "end_hour": "0"
-        //     },
-        //     "thu": {
-        //         "start_hour": "0",
-        //         "end_hour": "0"
-        //     },
-        //     "fri": {
-        //         "start_hour": "0",
-        //         "end_hour": "0"
-        //     },
-        //     "sat": {
-        //         "start_hour": "0",
-        //         "end_hour": "0"
-        //     }
-        // };
 
         var items = this.state.items;
 
@@ -139,7 +113,8 @@ export default class TimeSheetTable extends Component {
 
         this.setState({
             items: items,
-            counter: counter
+            counter: counter,
+            message: workType
         });
         console.log(typeof (start))
         console.log(this.state.items);
@@ -172,28 +147,35 @@ export default class TimeSheetTable extends Component {
         this.renderTotalRow();
     }
 
-    // recalculateHours(workday, items) {
-    //     var totals = this.state.totals;
-    //     var hours;
+    submitWorkDay(context) {
+        var start_hour = context.state.start_hour;
+        var end_hour = context.state.end_hour;
+        var type = context.state.message;
+        var workday = {
+            "start_hour": start_hour,
+            "end_hour": end_hour,
+            "type": type
+        };
+        console.log(workday)
+        context.postWorkDay(workday)
+    }
 
-    //     var total = 0;
-    //     items.map((item, index) => {
-    //         hours = Number(items[index][workday])
-    //         console.log(typeof hours);
-    //         total = Object.entries(item).length === 0 && item.constructor === Object ?
-    //             total + 0 : total + hours;
-    //         console.log("total: " + total);
-    //     });
+    async postWorkDay(workday) {
+        console.log(workday)
+        const res = await axios.post("http://127.0.0.1:3001/workdays",
+            workday,
+            { headers: { 'Content-Type': 'application/json' } });
+    };
 
-    //     totals[workday] = total
-
-    //     this.setState({
-    //         items: items,
-    //         totals: totals
-    //     });
-
-    //     this.renderTotalRow();
-    // }
+    typeOfDay(context, day) {
+        var weekdays = this.state.weekdays;
+        console.log(day + weekdays[new Date().getDay()])
+        if (day === weekdays[new Date().getDay()]) {
+            return (
+                <button onClick={context.submitWorkDay(context)}> Submit </button>
+            );
+        }
+    }
 
     handleWorkHoursChanged(i, workday, event) {
         var items = this.state.items;
@@ -300,19 +282,21 @@ export default class TimeSheetTable extends Component {
                                     }
                                     return (
                                         <td>
-                                            <div className="workInputContainer">
-                                                <span> Start hour: </span>
-                                                <span> {o[day]["start_hour"]}  </span>
-                                            </div>
-                                            <div className="workInputContainer">
-                                                <span> End hour: </span>
-                                                <span> {o[day]["end_hour"]} </span>
-                                                {/* <input
-                                                    type="text"
-                                                    value={o[day]}
-                                                    onChange={context.handleWorkHoursChanged.bind(context, i, day)}
-                                                /> */}
-                                            </div>
+
+                                            {/* <div className="workInputContainer">
+                                                    <span> Start hour: </span>
+                                                    <span> {o[day]["start_hour"]}  </span>
+                                                </div>
+                                                <div className="workInputContainer">
+                                                    <span> End hour: </span>
+                                                    <span> {o[day]["end_hour"]} </span>
+                                                </div> */}
+
+                                            <SimpleDialogDemo
+                                                startHour={o[day]["start_hour"]}
+                                                endHour={o[day]["end_hour"]}
+                                                day={day} />
+                                            {/* {context.typeOfDay(context, day)} */}
                                         </td>
                                     )
                                 }
@@ -381,10 +365,12 @@ export default class TimeSheetTable extends Component {
 
                 <div className="addWorkContainer">
 
-                    <TimePicker hour={this.state.start_hour}
+                    <TimePicker
+                        hour={this.state.start_hour}
                         label="Select Start Hour"
                         changeDate={this.changeFirst.bind(this)} />
-                    <TimePicker hour={this.state.end_hour}
+                    <TimePicker
+                        hour={this.state.end_hour}
                         label="Select End Hour"
                         changeDate={this.changeSecond.bind(this)} />
 
