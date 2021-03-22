@@ -20,6 +20,12 @@ const useStyles = makeStyles({
         width: 100,
         padding: 50,
         margin: 50
+    },
+    timeContainers: {
+        padding: 10,
+        margin: 10,
+        display: "flex",
+        flexDirection: "column"
     }
 });
 
@@ -48,15 +54,19 @@ function SimpleDialog(props) {
         <Dialog onClose={handleClose} aria-labelledby="simple-dialog-title" open={open}>
             <DialogTitle id="simple-dialog-title"> {day} worked hours </DialogTitle>
 
-            <TimePicker className={classes.timePickers} label="Start Hour"
-                hour={newStartHour}
-                changeDate={changeStart} />
+            <div className={classes.timeContainers}>
+                <TimePicker className={classes.timePickers} label="Start Hour"
+                    hour={newStartHour}
+                    changeDate={changeStart} />
 
-            <TimePicker className={classes.timePickers} label="Start Hour"
-                hour={newEndHour}
-                changeDate={changeEnd} />
+                <TimePicker className={classes.timePickers} label="Start Hour"
+                    hour={newEndHour}
+                    changeDate={changeEnd} />
 
-            <Button onClick={handleClose}> Submit </Button>
+                <div className="wrap">
+                    <button className="submitButton" onClick={handleClose}> Submit </button>
+                </div>
+            </div>
         </Dialog>
     );
 }

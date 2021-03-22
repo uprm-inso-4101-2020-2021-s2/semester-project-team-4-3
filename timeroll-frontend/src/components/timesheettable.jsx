@@ -11,32 +11,114 @@ export default class TimeSheetTable extends Component {
         this.state = {
             message: "",
             items: [],
+            timesheetTasks: {},
             counter: 0,
             start_hour: new Date(),
             end_hour: new Date(),
             totals: {
-                "mon": 0,
-                "tue": 0,
-                "wed": 0,
-                "thu": 0,
-                "fri": 0,
-                "sat": 0
+                "Monday": 0,
+                "Tuesday": 0,
+                "Wednesday": 0,
+                "Thursday": 0,
+                "Friday": 0,
+                "Saturday": 0
             },
-            weekdays: ["sun", 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'],
-            workTypes: []
-        }
-    }
-
-    componentDidMount() {
-        this.setState({
+            weekdays: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
+            months: ["January",
+                "February",
+                "March",
+                "April",
+                "May",
+                "June",
+                "July",
+                "August",
+                "September",
+                "October",
+                "November",
+                "December"],
             workTypes: [
                 { id: 'NONE', name: 'None' },
                 { id: 'SECRT', name: 'Secretarial' },
                 { id: 'LABTR', name: 'Laboratorio' },
                 { id: 'FACTU', name: 'Facturacion' },
                 { id: 'MUEST', name: 'Toma de Muestra' }
-            ]
-        });
+            ],
+            weekDates: []
+        }
+    }
+
+    componentDidMount() {
+        var items = this.getTimesheet(this, "2021-03-15T18:49:38.754Z");
+
+        console.log(this.state.timesheetTasks)
+    }
+
+    componentDidUpdate(prevProps) {
+        if (prevProps.calendarDate !== this.props.calendarDate) {
+            this.renderHeader();
+        }
+    }
+
+    async postWorkDay(workday) {
+
+        const res = await axios.post("http://127.0.0.1:3001/workdays",
+            workday,
+            { headers: { 'Content-Type': 'application/json' } });
+    };
+
+    async getTimesheet(context, date) {
+
+        const res = await axios.get('http://127.0.0.1:3001/Timesheet/' + date)
+            .then(async (response) => {
+                // handle success
+                var tasks = context.formatTimesheetInfo(response.data)
+                await context.setState({
+                    timesheetTasks: tasks
+                })
+
+                console.log(context.state.timesheetTasks)
+            })
+    };
+
+    getDaysOfTheWeek(selectedDate) {
+        var dates = [];
+        var tempDate;
+        tempDate = this.setToMonday(selectedDate);
+
+        for (var i = 0; i < 6; i++) {
+            var nextDay = new Date(tempDate);
+            nextDay.setDate(tempDate.getDate() + i);
+            dates.push(nextDay);
+        }
+        return dates
+    }
+
+    renderHeader() {
+        var dates = this.getDaysOfTheWeek(this.props.calendarDate);
+        var weekDays = this.state.weekdays;
+        var months = this.state.months;
+        return (
+            <tr className="table-header">
+                <th className="col-2r">
+                    <span> Work Task </span>
+
+                </th>
+
+                {dates.map(function (date, i) {
+                    var formattedDate = months[date.getMonth()] + " " + date.getDate() + ", " + date.getYear()
+                    return (
+                        <th className="col-2r">
+                            <span>{weekDays[i]} </span>
+                            <span className="date"> {formattedDate} </span>
+                        </th>
+                    )
+                })}
+
+                <th className="col-2r">
+
+                </th>
+            </tr>
+        );
     }
 
     tableStyle = {
@@ -60,8 +142,6 @@ export default class TimeSheetTable extends Component {
         this.setState({
             items: items
         });
-
-        console.log(this.state.items);
     }
 
     handleItemChanged(i, event) {
@@ -72,7 +152,6 @@ export default class TimeSheetTable extends Component {
         this.setState({
             items: items
         });
-        console.log(this.state.items);
     }
 
     handleItemDelete(i) {
@@ -92,7 +171,6 @@ export default class TimeSheetTable extends Component {
         var weekdays = this.state.weekdays;
 
         var today = weekdays[new Date().getDay()];
-        console.log(start);
 
         var workType = this.state.message !== "" ? this.state.message : "NONE"
 
@@ -103,7 +181,6 @@ export default class TimeSheetTable extends Component {
                 "end_hour": end.toISOString()
             }
         };
-        console.log(workEntry)
 
         var items = this.state.items;
 
@@ -116,8 +193,7 @@ export default class TimeSheetTable extends Component {
             counter: counter,
             message: workType
         });
-        console.log(typeof (start))
-        console.log(this.state.items);
+
         var diff = this.calculateWorkHours(start, end);
         this.recalculateHours(today, diff, true);
     }
@@ -126,6 +202,24 @@ export default class TimeSheetTable extends Component {
         var diff = (end.getTime() - start.getTime()) / 1000;
         diff /= (60 * 60);
         return Math.abs(diff);
+    }
+
+    calculateTotals(workday, hour, add) {
+        var totals = this.state.totals;
+
+        var total = 0;
+
+        if (add === true) {
+            totals[workday] = totals[workday] + hour;
+        }
+        else {
+            totals[workday] = totals[workday] - hour;
+        }
+        this.setState({
+            totals: totals
+        });
+
+        this.renderTotalRow();
     }
 
     recalculateHours(workday, hour, add) {
@@ -156,20 +250,51 @@ export default class TimeSheetTable extends Component {
             "end_hour": end_hour,
             "type": type
         };
-        console.log(workday)
+
         context.postWorkDay(workday)
     }
 
-    async postWorkDay(workday) {
-        console.log(workday)
-        const res = await axios.post("http://127.0.0.1:3001/workdays",
-            workday,
-            { headers: { 'Content-Type': 'application/json' } });
-    };
+    formatTimesheetInfo(timesheet) {
+        var currentTaskList = {}
+        var task = "";
+        var worktype = "";
+        var totalWorkHours = this.state.totals;
+        for (const item in timesheet) {
+            if (item != "date") {
+                task = timesheet[item]["tasks"]
+
+                for (const i in task) {
+
+                    worktype = task[i]["worktype"]
+
+                    if (!(worktype in currentTaskList)) {
+                        currentTaskList[worktype] = {
+                            "worktype": worktype,
+                        }
+                    }
+
+                    currentTaskList[worktype][item] = {
+                        "end_time": task[i]["end_time"],
+                        "note": task[i]["note"],
+                        "start_time": task[i]["start_time"]
+                    };
+
+                    totalWorkHours[item] += this.calculateWorkHours(
+                        new Date(task[i]["start_time"]),
+                        new Date(task[i]["end_time"]))
+
+                }
+            }
+        }
+        this.setState({
+            totals: totalWorkHours
+        })
+
+        return currentTaskList
+    }
 
     typeOfDay(context, day) {
         var weekdays = this.state.weekdays;
-        console.log(day + weekdays[new Date().getDay()])
         if (day === weekdays[new Date().getDay()]) {
             return (
                 <button onClick={context.submitWorkDay(context)}> Submit </button>
@@ -182,8 +307,6 @@ export default class TimeSheetTable extends Component {
         var value = event.target.value;
         value = value.replace(/\D/g, "");
 
-        console.log(items);
-
         items[i][workday] = value;
 
         this.recalculateHours(workday, items);
@@ -194,11 +317,7 @@ export default class TimeSheetTable extends Component {
         var value = event.target.value;
         value = value.replace(/\D/g, "");
 
-        console.log(items);
-
         items[i][workday]["start_hour"] = value;
-
-        // this.recalculateHours(workday, items);
     }
 
     handleEndWorkHoursChanged(i, workday, event) {
@@ -206,102 +325,131 @@ export default class TimeSheetTable extends Component {
         var value = event.target.value;
         value = value.replace(/\D/g, "");
 
-        console.log(items);
-
         if (value)
             items[i][workday]["end_hour"] = value;
-        //this.recalculateHours(workday, items);
     }
 
     renderTotalRow() {
-        var context = this;
+        var weekdays = this.state.weekdays;
         var totals = this.state.totals;
         return (
-            <tr key={"item-5"} className="tableRows">
-                <td className="workTypeColumn">
+            <tr key={"item-5"} className="table-row">
+                <td className="col-1r">
                     <span> totals </span>
                 </td>
-                <td>
-                    <span> {totals["mon"]} </span>
-                </td>
-                <td>
-                    <span> {totals["tue"]} </span>
-                </td>
-                <td>
-                    <span> {totals["wed"]} </span>
-                </td>
-                <td>
-                    <span> {totals["thu"]} </span>
-                </td>
-                <td>
-                    <span> {totals["fri"]} </span>
-                </td>
-                <td>
-                    <span> {totals["sat"]} </span>
+
+                {weekdays.map(function (day, i) {
+                    return (
+                        <td className="col-1r">
+                            <span> {totals[day]} </span>
+                        </td>
+                    )
+                })}
+                <td className="col-1r">
                 </td>
             </tr>
         );
-
     }
 
     changeFirst(hour) {
-        console.log(hour);
         this.setState({
             start_hour: hour,
         });
     }
 
     changeSecond(hour) {
-        console.log(hour);
         this.setState({
             end_hour: hour,
         });
     }
 
+    setToMonday(date) {
+        var tempDate = new Date(date);
+        var day = tempDate.getDay() || 7;
+        if (day !== 1)
+            tempDate.setHours(-24 * (day - 1));
+        return tempDate;
+    }
+
     renderRows() {
         var context = this;
-        var tableColumns = ["mon", "tue", "wed", "thu", "fri", "sat", "delete"];
-
-        return this.state.items.map(function (o, i) {
+        var tableColumns = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Delete"];
+        var totalWorkHours = this.state.totals;
+        var tasks = context.state.timesheetTasks;
+        console.log(tasks);
+        return Object.keys(tasks).map(function (key, index) {
             return (
-                <tr key={"item-" + i} className="tableRows">
-                    <td className="workTypeColumn">
+                <tr key={"item-" + key} className="table-row">
+                    <td className="col-1r">
                         <span
                             type="text"
-                            value={o["type"]}
-                        > {o["type"]} </span>
+                            value={tasks[key]["worktype"]}
+                        > {tasks[key]["worktype"]} </span>
                     </td>
 
                     {
                         tableColumns.map(function (day, index) {
 
+                            if (Object.keys(tasks[key]).length !== 0) {
+                                console.log(tasks[key][day]);
+                                if (day !== "Delete" && tasks[key][day] !== undefined) {
+                                    // if (tasks[key][day]["start_time"] !== undefined) {
+
+                                    //     totalWorkHours[day] += context.calculateWorkHours(
+                                    //         new Date(tasks[key][day]["start_time"]),
+                                    //         new Date(tasks[key][day]["end_time"]))
+
+                                    // }
+                                    return (
+                                        <td className="col-1r">
+                                            <SimpleDialogDemo
+                                                startHour={tasks[key][day]["start_time"]}
+                                                endHour={tasks[key][day]["end_time"]}
+                                                day={day} />
+                                        </td>
+                                    )
+                                }
+                                else if (day === "Delete") {
+                                    return (<td className="col-1r">
+                                        <button
+                                            onClick={context.handleItemDelete.bind(context, index)}
+                                            className="deleteButton"
+                                        >
+                                            Delete
+                                        </button>
+                                    </td>)
+                                }
+                                else {
+                                    return (
+                                        <td className="col-1r">
+                                            <div >
+                                                <span> - </span>
+
+                                            </div>
+                                        </td>);
+                                }
+                            }
+                        })
+                    }
+
+                    {/* {
+                        tableColumns.map(function (day, index) {
+
                             if (Object.keys(o).length !== 0) {
                                 if (day !== "delete" && o[day] !== undefined) {
                                     if (o[day]["start_hour"] !== undefined) {
-                                        console.log("defined: ", day);
                                     }
                                     return (
-                                        <td>
-
-                                            {/* <div className="workInputContainer">
-                                                    <span> Start hour: </span>
-                                                    <span> {o[day]["start_hour"]}  </span>
-                                                </div>
-                                                <div className="workInputContainer">
-                                                    <span> End hour: </span>
-                                                    <span> {o[day]["end_hour"]} </span>
-                                                </div> */}
-
+                                        <td className="col-1r">
                                             <SimpleDialogDemo
                                                 startHour={o[day]["start_hour"]}
                                                 endHour={o[day]["end_hour"]}
                                                 day={day} />
-                                            {/* {context.typeOfDay(context, day)} */}
                                         </td>
                                     )
                                 }
                                 else if (day === "delete") {
-                                    return (<td>
+                                    return (<td className="col-1r">
                                         <button
                                             onClick={context.handleItemDelete.bind(context, i)}
                                         >
@@ -310,19 +458,17 @@ export default class TimeSheetTable extends Component {
                                     </td>)
                                 }
                                 else {
-                                    console.log("-");
                                     return (
-                                        <td>
-                                            <div className="workInputContainer">
+                                        <td className="col-1r">
+                                            <div >
                                                 <span> - </span>
 
                                             </div>
                                         </td>);
                                 }
                             }
-
                         })
-                    }
+                    } */}
                 </tr>
             );
         }
@@ -333,29 +479,26 @@ export default class TimeSheetTable extends Component {
     render() {
 
         let work = this.state.workTypes;
+        var context = this;
+        this.getDaysOfTheWeek(this.props.calendarDate);
+
         let optionItems = work.map((types) =>
             <option key={types.id}>{types.id}</option>
         );
         return (
-            <div>
-                <table style={this.tableStyle}>
-                    <thead>
-                        <tr>
-                            <th >Work type </th>
-                            <th>Monday</th>
-                            <th>Tuesday</th>
-                            <th>Wednesday</th>
-                            <th>Thursday</th>
-                            <th>Friday</th>
-                            <th>Saturday</th>
-                            <th> </th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {this.renderRows()}
-                        {this.renderTotalRow()}
-                    </tbody>
-                </table>
+            <div className="container">
+                <div className="tableContainer">
+                    <table className="responsive-table">
+                        <thead>
+                            {this.renderHeader()}
+                        </thead>
+                        <tbody>
+                            {this.renderRows()}
+                            {this.renderTotalRow()}
+                        </tbody>
+                    </table>
+                </div>
+
                 <hr />
 
                 <span className="addWork"> Add Work Task done: </span>
@@ -374,7 +517,7 @@ export default class TimeSheetTable extends Component {
                         label="Select End Hour"
                         changeDate={this.changeSecond.bind(this)} />
 
-                    <button className="workContainerBtn" onClick={this.handleAddWork.bind(this)}>
+                    <button className="submitButton" onClick={this.handleAddWork.bind(this)}>
                         Add
                     </button>
                 </div>

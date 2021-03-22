@@ -4,15 +4,32 @@ import TimeSheetTable from './timesheettable';
 import '../App.css';
 
 class Timesheet extends Component {
-    state = {}
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            calendarDate: new Date()
+        }
+    }
+
+    setCalendarDate(date) {
+        this.setState({
+            calendarDate: date
+        });
+    }
+
+    getCalendarDate() {
+        return this.state.calendarDate;
+    }
+
     render() {
         return (
             <React.Fragment>
-                <div id="body" className="body">
+                <div className="body" >
                     <div className="datepickers">
-                        <MaterialUIPickers />
+                        <MaterialUIPickers calendarDate={this.state.calendarDate} setCalendarDate={this.setCalendarDate.bind(this)} />
                     </div>
-                    <TimeSheetTable />
+                    <TimeSheetTable calendarDate={this.state.calendarDate} />
                 </div>
             </React.Fragment>
         );
