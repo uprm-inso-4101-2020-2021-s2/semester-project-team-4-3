@@ -48,14 +48,27 @@ export default class TimeSheetTable extends Component {
     }
 
     componentDidMount() {
-        var items = this.getTimesheet(this, "2021-03-15T18:49:38.754Z");
-
-        console.log(this.state.timesheetTasks)
+        var date = new Date()
+        date.setHours(0)
+        date.setMinutes(0)
+        date.setSeconds(0)
+        console.log(date)
+        this.getTimesheet(this, date.toISOString());
+        //    console.log(this.state.timesheetTasks)
     }
 
     componentDidUpdate(prevProps) {
         if (prevProps.calendarDate !== this.props.calendarDate) {
+            this.props.calendarDate.setHours(0)
+            this.props.calendarDate.setMinutes(0)
+            this.props.calendarDate.setSeconds(0)
+
+            var tempDate = this.setToMonday(this.props.calendarDate)
+            console.log(tempDate.toISOString())
             this.renderHeader();
+            this.getTimesheet(this, tempDate.toISOString());
+            this.renderTotalRow();
+            this.renderRows();
         }
     }
 
@@ -76,7 +89,10 @@ export default class TimeSheetTable extends Component {
                     timesheetTasks: tasks
                 })
 
-                console.log(context.state.timesheetTasks)
+                //  console.log(context.state.timesheetTasks)
+            })
+            .catch(function (error) {
+                console.log(error);
             })
     };
 
@@ -258,10 +274,12 @@ export default class TimeSheetTable extends Component {
         var currentTaskList = {}
         var task = "";
         var worktype = "";
-        var totalWorkHours = this.state.totals;
+        var date;
+        var totalWorkHours = {};
         for (const item in timesheet) {
             if (item != "date") {
                 task = timesheet[item]["tasks"]
+                date = new Date(timesheet[item]["date"])
 
                 for (const i in task) {
 
@@ -274,14 +292,25 @@ export default class TimeSheetTable extends Component {
                     }
 
                     currentTaskList[worktype][item] = {
+                        "date": date.getYear() + "-" + date.getMonth() + "-" + date.getDate(),
                         "end_time": task[i]["end_time"],
                         "note": task[i]["note"],
                         "start_time": task[i]["start_time"]
                     };
 
-                    totalWorkHours[item] += this.calculateWorkHours(
-                        new Date(task[i]["start_time"]),
-                        new Date(task[i]["end_time"]))
+                    // console.log(totalWorkHours[item])
+
+                    if (totalWorkHours[item] === undefined) {
+                        totalWorkHours[item] = this.calculateWorkHours(
+                            new Date(task[i]["start_time"]),
+                            new Date(task[i]["end_time"]))
+                    }
+                    else {
+                        totalWorkHours[item] += this.calculateWorkHours(
+                            new Date(task[i]["start_time"]),
+                            new Date(task[i]["end_time"]))
+                    }
+
 
                 }
             }
@@ -374,9 +403,9 @@ export default class TimeSheetTable extends Component {
     renderRows() {
         var context = this;
         var tableColumns = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Delete"];
-        var totalWorkHours = this.state.totals;
         var tasks = context.state.timesheetTasks;
-        console.log(tasks);
+        var date;
+        console.log("updating");
         return Object.keys(tasks).map(function (key, index) {
             return (
                 <tr key={"item-" + key} className="table-row">
@@ -391,18 +420,13 @@ export default class TimeSheetTable extends Component {
                         tableColumns.map(function (day, index) {
 
                             if (Object.keys(tasks[key]).length !== 0) {
-                                console.log(tasks[key][day]);
+
                                 if (day !== "Delete" && tasks[key][day] !== undefined) {
-                                    // if (tasks[key][day]["start_time"] !== undefined) {
 
-                                    //     totalWorkHours[day] += context.calculateWorkHours(
-                                    //         new Date(tasks[key][day]["start_time"]),
-                                    //         new Date(tasks[key][day]["end_time"]))
-
-                                    // }
                                     return (
                                         <td className="col-1r">
                                             <SimpleDialogDemo
+                                                key={tasks[key][day]["date"]}
                                                 startHour={tasks[key][day]["start_time"]}
                                                 endHour={tasks[key][day]["end_time"]}
                                                 day={day} />
@@ -422,53 +446,14 @@ export default class TimeSheetTable extends Component {
                                 else {
                                     return (
                                         <td className="col-1r">
-                                            <div >
-                                                <span> - </span>
-
-                                            </div>
+                                            <SimpleDialogDemo
+                                                day={day} />
                                         </td>);
                                 }
                             }
                         })
                     }
 
-                    {/* {
-                        tableColumns.map(function (day, index) {
-
-                            if (Object.keys(o).length !== 0) {
-                                if (day !== "delete" && o[day] !== undefined) {
-                                    if (o[day]["start_hour"] !== undefined) {
-                                    }
-                                    return (
-                                        <td className="col-1r">
-                                            <SimpleDialogDemo
-                                                startHour={o[day]["start_hour"]}
-                                                endHour={o[day]["end_hour"]}
-                                                day={day} />
-                                        </td>
-                                    )
-                                }
-                                else if (day === "delete") {
-                                    return (<td className="col-1r">
-                                        <button
-                                            onClick={context.handleItemDelete.bind(context, i)}
-                                        >
-                                            Delete
-                                                    </button>
-                                    </td>)
-                                }
-                                else {
-                                    return (
-                                        <td className="col-1r">
-                                            <div >
-                                                <span> - </span>
-
-                                            </div>
-                                        </td>);
-                                }
-                            }
-                        })
-                    } */}
                 </tr>
             );
         }

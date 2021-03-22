@@ -84,8 +84,6 @@ export default function SimpleDialogDemo(props) {
     const [newStartHour, setNewStartHour] = React.useState(new Date(props.startHour));
     const [newEndHour, setNewEndHour] = React.useState(new Date(props.endHour));
 
-    const [selectedValue, setSelectedValue] = React.useState(emails[1]);
-
     const handleClickOpen = () => {
         setOpen(true);
     };
@@ -94,6 +92,10 @@ export default function SimpleDialogDemo(props) {
         setOpen(false);
         // setSelectedValue(value);
     };
+
+    // React.useEffect(() => {
+    //     console.log("updated Time: " + newStartHour)
+    // });
 
     const changeFirst = (hour) => {
         setNewStartHour(hour);
@@ -109,7 +111,10 @@ export default function SimpleDialogDemo(props) {
     }
 
     const calculateWorkHours = (start, end) => {
-        var diff = (newEndHour.getTime() - newStartHour.getTime()) / 1000;
+        if (isNaN(start.getTime())) {
+            return "-"
+        }
+        var diff = (end.getTime() - start.getTime()) / 1000;
         diff /= (60 * 60);
 
         return Math.abs(diff).toFixed(2);
