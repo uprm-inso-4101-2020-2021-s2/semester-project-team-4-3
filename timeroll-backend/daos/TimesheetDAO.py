@@ -1,8 +1,33 @@
-
+import psycopg2
+import config.dbconfig
 
 class TimesheetDAO:
-    def getTimesheet(self, eid, day):
-        #Hardcoded value to test Handler and main
-        #Final implementation will identify timesheet based on biweekly or weekly period
-        timesheet = [0,"03/01/2021","03/14/2021",0]
-        return timesheet
+
+    def __init__(self):
+        connection_url = "dbname=%s user=%s host = 'localhost' password=%s" % (
+            config.dbconfig.database_config['dbname'],
+            config.dbconfig.database_config['user'],
+            config.dbconfig.database_config['passwd'])
+        self.conn = psycopg2.connect(connection_url)
+
+    def getTimesheet(self,uid, day):
+        cursor = self.conn.cursor()
+        query = "select tid, start_date, end_date from timesheet where eid = %s and %s between start_date and end_date;"
+        cursor.execute(query,(uid, day,))
+        result = cursor.fetchone()
+        return result
+
+    def getTimesheetID(self,uid, day):
+        cursor = self.conn.cursor()
+        query = "select tid from timesheet where eid = %s and %s between start_date and end_date;"
+        cursor.execute(query,(uid, day,))
+        result = cursor.fetchone()
+        return result
+
+    def createTimesheet(self, startdate, enddate, uid):
+        cursor = self.conn.cursor()
+        query = "insert into timesheet(start_date,end_date, eid) values (%s, %s, %s) returning tid;"
+        cursor.execute(query, (startdate,enddate,uid,))
+        tid = cursor.fetchone()
+        self.conn.commit()
+        return tid

@@ -1,65 +1,50 @@
-from flask import Flask, jsonify, request, render_template
-from flask_cors import CORS, cross_origin
-from handlers.TimesheetHandler import TimesheetHandler
-from datetime import datetime
+import os
+import flask
+from flask import Flask
+from flask_sqlalchemy import SQLAlchemy
+import flask_cors
+import flask_praetorian
+import config.app_config
 
-#Activate
-app = Flask(__name__)
+db = SQLAlchemy()                       #initialize SQLAlchemy
+guard = flask_praetorian.Praetorian()   #initialize flask praetorian
+cors = flask_cors.CORS()                #initialize CORS
 
-@app.route('/')
-def index():
-    return 'Welcome to the TimeRoll App! Please log in'
+def create_app():
+    app = flask.Flask(__name__)
+    app.debug = True                    #Change for deployment
+
+    app.config['SQLALCHEMY_DATABASE_URI'] = config.app_config.configs['db_string']          #set databaase connection string
+    app.config['SECRET_KEY'] = config.app_config.configs['secret_key']                      #Set encryption secret key
+    app.config['JWT_ACCESS_LIFESPAN'] = {'hours': 24}                                       #JWT Lifespan
+    app.config['JWT_REFRESH_LIFESPAN'] = {'days' : 30}
+
+    from daos.UserModel import uaccount                                                     #Import the user model
+
+    guard.init_app(app,uaccount)                                                            #Provide user model to praetorian
+    db.init_app(app)                                                                        #initiate db connection
+    cors.init_app(app)                                                                      #Corsify app
+
+#    with app.app_context():                                                                 #Creates an admin account if it doesn't exist right now. Parameters can be modified for different instances. Remove for production
+#        if db.session.query(uaccount).filter_by(email='jaq@site.com').count() < 1:
+#            db.session.add(uaccount(
+#                email = 'jaq@site.com',
+#                password = guard.hash_password('password123'),
+#                first_name = 'Julian',
+#                last_name = 'Quinones',
+#                phone_number = '787-247-9495',
+#                salary = '51',
+#                vacation_days = 15,
+#                sick_days = 15,
+#                role = 'admin',
+#            ))
+#            db.session.commit()
 
 
-@app.route('/home')
-def home():
-    return 'Welcome to your Home Page!'
+    from Blueprints.auth import auth as auth_blueprint           #Imports all the blueprints. Routes are stored in the blueprints to prevent large route file
+    from Blueprints.timesheets import timesheets as timesheet_blueprint
 
+    app.register_blueprint(auth_blueprint)
+    app.register_blueprint(timesheet_blueprint, url_prefix='/timesheet')
 
-@app.route('/timesheet', methods=['GET','POST','UPDATE'])
-def manageTimesheet():
-    eid = 0                             #Placeholder eid. Replace when accounts structure has been established
-    day = request.form.get("day")
-    if request.method == 'GET':
-        if day:
-             return TimesheetHandler().getTimesheetByDate(eid, day)
-        else:
-            return TimesheetHandler().getTimesheet(1)
-
-    elif request.method == 'POST':
-        return TimesheetHandler().insertValues(request.form.eid, request.form)
-
-    elif request.method == 'UPDATE':
-        return TimesheetHandler().updateValues(request.form.eid,request.form)
-
-    else:
-        return jsonify(Error="Method not allowed."),405
-
-
-
-@app.route('/employee', methods=['GET','POST','UPDATE'])
-def employee():
-    return 'This is your employee page!'
-
-@app.route('/employees/<int:eid>', methods=['GET','UPDATE'])
-def employees():
-    return 'This is the admin employee page'
-
-@app.route('/paystubs', methods=['GET'])
-def paystubs():
-    return 'View your paystubs here!'
-
-@app.route('/Requests/<int:eid>', methods=['GET','POST','UPDATE'])
-def requests():
-    return 'View pending requests here'
-
-@app.route('/worktrends', methods=['GET'])
-def worktrends():
-    return 'See how your work has been these past few days'
-@app.route('/worktrends/<int:eid>', methods = ['GET'])
-def eworktrends():
-    return 'Check employee work trends here'
-
-@app.route('/profile', methods = ['GET','UPDATE'])
-def profile():
-    return 'Edit your profile here'
+    return app
