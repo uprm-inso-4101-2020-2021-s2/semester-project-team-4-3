@@ -4,10 +4,12 @@ import config.dbconfig
 class TimesheetDAO:
 
     def __init__(self):
-        connection_url = "dbname=%s user=%s host = 'localhost' password=%s" % (
+        connection_url = "dbname=%s user=%s host = '%s' password=%s port = %s" % (
             config.dbconfig.database_config['dbname'],
             config.dbconfig.database_config['user'],
-            config.dbconfig.database_config['passwd'])
+            config.dbconfig.database_config['host'],
+            config.dbconfig.database_config['passwd'],
+            config.dbconfig.database_config['port'])
         self.conn = psycopg2.connect(connection_url)
 
     def getTimesheet(self,uid, day):

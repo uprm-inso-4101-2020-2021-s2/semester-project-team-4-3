@@ -23,22 +23,23 @@ def create_app():
 
     guard.init_app(app,uaccount)                                                            #Provide user model to praetorian
     db.init_app(app)                                                                        #initiate db connection
-    cors.init_app(app)                                                                      #Corsify app
+    cors.init_app(app)
 
-#    with app.app_context():                                                                 #Creates an admin account if it doesn't exist right now. Parameters can be modified for different instances. Remove for production
-#        if db.session.query(uaccount).filter_by(email='jaq@site.com').count() < 1:
-#            db.session.add(uaccount(
-#                email = 'jaq@site.com',
-#                password = guard.hash_password('password123'),
-#                first_name = 'Julian',
-#                last_name = 'Quinones',
-#                phone_number = '787-247-9495',
-#                salary = '51',
-#                vacation_days = 15,
-#                sick_days = 15,
-#                role = 'admin',
-#            ))
-#            db.session.commit()
+    with app.app_context():                                                                 #Creates an admin account if it doesn't exist right now. Parameters can be modified for different instances. Remove for production
+       if db.session.query(uaccount).filter_by(email='pepe.r@site.com').count() < 2:
+           db.session.add(uaccount(
+               email = 'pepe.r@site.com',
+               password = guard.hash_password('password123'),
+               first_name = 'Pepe',
+               last_name = 'Rodriguez',
+               phone_number = '939-269-8952',
+               salary = '15',
+               vacation_days = 15,
+               sick_days = 8,
+               username = 'PepeR',
+               role = 'employee',
+           ))
+           db.session.commit()
 
 
     from Blueprints.auth import auth as auth_blueprint           #Imports all the blueprints. Routes are stored in the blueprints to prevent large route file
