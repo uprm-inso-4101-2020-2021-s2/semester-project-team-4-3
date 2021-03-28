@@ -26,7 +26,7 @@ def create_app():
     cors.init_app(app)
 
     with app.app_context():                                                                 #Creates an admin account if it doesn't exist right now. Parameters can be modified for different instances. Remove for production
-       if db.session.query(uaccount).filter_by(email='pepe.r@site.com').count() < 2:
+       if db.session.query(uaccount).filter_by(email='pepe.r@site.com').count() < 1:
            db.session.add(uaccount(
                email = 'pepe.r@site.com',
                password = guard.hash_password('password123'),
