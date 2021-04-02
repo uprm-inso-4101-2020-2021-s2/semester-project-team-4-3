@@ -31,13 +31,12 @@ const useStyles = makeStyles({
 
 function SimpleDialog(props) {
     const classes = useStyles();
-    const { startHour, endHour, day, open, onClose } = props;
 
     const [newStartHour, setNewStartHour] = React.useState(props.startHour);
     const [newEndHour, setNewEndHour] = React.useState(props.endHour);
 
     const handleClose = () => {
-        onClose();
+        props.onClose();
     };
 
     const changeStart = (hour) => {
@@ -51,8 +50,8 @@ function SimpleDialog(props) {
     };
 
     return (
-        <Dialog onClose={handleClose} aria-labelledby="simple-dialog-title" open={open}>
-            <DialogTitle id="simple-dialog-title"> {day} worked hours </DialogTitle>
+        <Dialog onClose={handleClose} aria-labelledby="simple-dialog-title" open={props.open}>
+            <DialogTitle id="simple-dialog-title"> {props.day} worked hours </DialogTitle>
 
             <div className={classes.timeContainers}>
                 <TimePicker className={classes.timePickers} label="Start Hour"
@@ -64,25 +63,24 @@ function SimpleDialog(props) {
                     changeDate={changeEnd} />
 
                 <div className="wrap">
-                    <button className="submitButton" onClick={handleClose}> Submit </button>
+                    <button className="submitButton" onClick={() => handleClose}> Submit </button>
                 </div>
             </div>
         </Dialog>
     );
 }
 
-SimpleDialog.propTypes = {
-    onClose: PropTypes.func.isRequired,
-    open: PropTypes.bool.isRequired,
-    selectedValue: PropTypes.string.isRequired,
-};
+const SimpleDialogDemo = (props) => {
+    const [open, setOpen] = React.useState(Boolean(!!props.variant));
+    const day = props.day;
+    console.log(props.info.end_time)
 
-export default function SimpleDialogDemo(props) {
-    const [open, setOpen] = React.useState(false);
-    const { startHour, endHour, day } = props;
+    const [newStartHour, setNewStartHour] = React.useState(new Date(props.info.start_time));
+    const [newEndHour, setNewEndHour] = React.useState(new Date(props.info.end_time));
+    const [totals, setTotals] = React.useState(props.total);
 
-    const [newStartHour, setNewStartHour] = React.useState(new Date(props.startHour));
-    const [newEndHour, setNewEndHour] = React.useState(new Date(props.endHour));
+    // const [newStartHour, setNewStartHour] = React.useState(new Date(props.info.start_time));
+    // const [newEndHour, setNewEndHour] = React.useState(new Date(props.info.end_time));
 
     const handleClickOpen = () => {
         setOpen(true);
@@ -90,12 +88,14 @@ export default function SimpleDialogDemo(props) {
 
     const handleClose = () => {
         setOpen(false);
-        // setSelectedValue(value);
+        // props.editWorkDayHours(
+        //     props.info.date,
+        //     day,
+        //     newStartHour.toISOString(),
+        //     newEndHour.toISOString(),
+        //     props.task,
+        //     totals);
     };
-
-    // React.useEffect(() => {
-    //     console.log("updated Time: " + newStartHour)
-    // });
 
     const changeFirst = (hour) => {
         setNewStartHour(hour);
@@ -105,11 +105,6 @@ export default function SimpleDialogDemo(props) {
         setNewEndHour(hour);
     };
 
-    const getFormattedTime = (time) => {
-        let result = time.match(/\d\d:\d\d/);
-        return result
-    }
-
     const calculateWorkHours = (start, end) => {
         if (isNaN(start.getTime())) {
             return "-"
@@ -117,22 +112,28 @@ export default function SimpleDialogDemo(props) {
         var diff = (end.getTime() - start.getTime()) / 1000;
         diff /= (60 * 60);
 
+        setTotals(Math.abs(diff).toFixed(2));
+
         return Math.abs(diff).toFixed(2);
     };
 
     return (
+
         <div>
             <Button variant="outlined" color="primary" onClick={handleClickOpen}>
                 {calculateWorkHours(newStartHour, newEndHour)}
             </Button>
-            <SimpleDialog
+            {/* <SimpleDialog
                 startHour={newStartHour}
                 endHour={newEndHour}
                 day={day}
                 open={open}
-                onClose={handleClose}
-                changeStart={changeFirst}
-                changeEnd={changeSecond} />
+                onClose={() => handleClose}
+                changeStart={() => changeFirst}
+                changeEnd={() => changeSecond} /> */}
         </div>
+
     );
 }
+
+export default React.memo(SimpleDialogDemo);
