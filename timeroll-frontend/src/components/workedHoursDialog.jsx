@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
@@ -25,6 +25,10 @@ const useStyles = makeStyles({
         margin: 10,
         display: "flex",
         flexDirection: "column"
+    },
+    text: {
+        padding: 10,
+        marginTop: 10
     }
 });
 
@@ -33,24 +37,34 @@ function SimpleDialog(props) {
     const [open, setOpen] = React.useState(props.open)
     const [newStartHour, setNewStartHour] = React.useState(props.startHour);
     const [newEndHour, setNewEndHour] = React.useState(props.endHour);
+    const [note, setNote] = React.useState(props.note);
 
-    const handleClose = () => {
-        props.onClose();
+    const handleClose = (submit) => {
+        console.log(note);
+        props.handleTextFieldChange(note);
+        props.onClose(submit, newStartHour, newEndHour);
     };
 
     const changeStart = (hour) => {
-        setNewStartHour(String(hour.getHours() + ":" + hour.getMinutes()));
+        setNewStartHour(hour);
         props.changeStart(hour);
     };
 
     const changeEnd = (hour) => {
-        setNewEndHour(String(hour.getHours() + ":" + hour.getMinutes()));
+        // setNewEndHour(String(hour.getHours() + ":" + hour.getMinutes()));
+        setNewEndHour(hour);
+        console.log("change end hour: " + hour)
         props.changeEnd(hour);
     };
 
+    const handleTextFieldChange = (e) => {
+        setNote(e.target.value);
+        props.handleTextFieldChange(e.target.value);
+    }
+
     return (
 
-        <Dialog onClose={handleClose} aria-labelledby="simple-dialog-title" open={open}>
+        <Dialog onClose={() => handleClose(false)} aria-labelledby="simple-dialog-title" open={open}>
             <DialogTitle id="simple-dialog-title"> {props.day} worked hours </DialogTitle>
 
             <div className={classes.timeContainers}>
@@ -62,8 +76,21 @@ function SimpleDialog(props) {
                     hour={newEndHour}
                     changeDate={changeEnd} />
 
+                <TextField
+                    value={note}
+                    onChange={handleTextFieldChange}
+                    className={classes.text}
+                    id="outlined-multiline-static"
+                    label="Note"
+                    multiline
+                    placeholder="Write a Note to express hour change"
+                    rows={5}
+                    variant="outlined"
+                />
+
                 <div className="wrap">
-                    <button className="submitButton" onClick={() => handleClose}> Submit </button>
+                    <button className="submitButton" onClick={() => handleClose(true)}> Submit </button>
+                    <button className="deleteButton" onClick={() => handleClose(false)}> Close </button>
                 </div>
             </div>
         </Dialog>
@@ -79,13 +106,21 @@ export default class SimpleDialogDemo extends Component {
         var end = new Date(props.info.end_time)
         var total = this.calculateWorkHours(start, end);
 
+        if (start.getFullYear() === 1969) {
+            start = NaN
+            end = NaN
+        }
+
+        // console.log(start.getFullYear())
+
         this.state = {
             open: false,
             newStartHour: start,
             newEndHour: end,
             totals: total,
             day: props.day,
-            date: props.info.date
+            date: props.info.date,
+            note: props.info.note
         };
     }
 
@@ -96,13 +131,25 @@ export default class SimpleDialogDemo extends Component {
 
             var start = new Date(this.props.info.start_time)
             var end = new Date(this.props.info.end_time)
+
             var total = this.calculateWorkHours(start, end);
 
-            this.setState({
-                newStartHour: this.props.info.start_time,
-                newEndHour: this.props.info.end_time,
-                totals: total
-            });
+
+            if (start.getFullYear() === 1969) {
+                this.setState({
+                    newStartHour: NaN,
+                    newEndHour: NaN,
+                    totals: total
+                });
+            }
+            else {
+                this.setState({
+                    newStartHour: this.props.info.start_time,
+                    newEndHour: this.props.info.end_time,
+                    totals: total
+                });
+            }
+
         }
     }
 
@@ -113,34 +160,46 @@ export default class SimpleDialogDemo extends Component {
         })
     };
 
-    handleClose = () => {
+    handleClose = (submit, start, end) => {
+        console.log(start)
+        console.log(end)
+        var total = this.calculateWorkHours(start, end)
+        console.log("total: " + total)
+
+        if (submit) {
+            this.props.editWorkDayHours(
+                this.props.info.date,
+                this.props.note,
+                this.props.day,
+                start,
+                end,
+                this.props.task,
+                total);
+        }
         var state = Boolean(false)
         this.setState({
-            open: state
+            open: state,
+            totals: total
         });
-        console.log(this.state.open)
-
-        // props.editWorkDayHours(
-        //     props.info.date,
-        //     day,
-        //     newStartHour.toISOString(),
-        //     newEndHour.toISOString(),
-        //     props.task,
-        //     totals);
     };
 
     changeFirst = (hour) => {
-        this.setState = ({
+        this.setState({
             newStartHour: hour
         })
-        //setNewStartHour(hour);
     };
 
     changeSecond = (hour) => {
-        this.setState = ({
+        this.setState({
             newEndHour: hour
         })
     };
+
+    handleTextFieldChange = (text) => {
+        this.setState({
+            note: text
+        })
+    }
 
     calculateWorkHours = (start, end) => {
         if (isNaN(start.getTime())) {
@@ -155,11 +214,9 @@ export default class SimpleDialogDemo extends Component {
     };
 
     render() {
-        var context = this;
-        console.log(this.state.open)
         return (
             <div>
-                <Button variant="outlined" color="primary" onClick={this.handleClickOpen}>
+                <Button key={this.state.totals} variant="outlined" color={this.state.totals === "0.00" ? "secondary" : "primary"} onClick={this.handleClickOpen}>
                     {this.state.totals}
                 </Button>
 
@@ -169,9 +226,11 @@ export default class SimpleDialogDemo extends Component {
                     endHour={this.state.newEndHour}
                     day={this.state.day}
                     open={this.state.open}
+                    note={this.state.note}
                     onClose={this.handleClose}
                     changeStart={this.changeFirst}
-                    changeEnd={this.changeSecond} />
+                    changeEnd={this.changeSecond}
+                    handleTextFieldChange={this.handleTextFieldChange} />
             </div>
 
         );

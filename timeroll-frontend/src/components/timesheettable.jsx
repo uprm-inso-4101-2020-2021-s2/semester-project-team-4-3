@@ -43,25 +43,9 @@ export default class TimeSheetTable extends Component {
                 { id: 'FACTU', name: 'Facturacion' },
                 { id: 'MUEST', name: 'Toma de Muestra' }
             ],
-            weekDates: []
+            weekdates: []
         }
     }
-
-    // componentWillMount() {
-    //     var date = new Date()
-    //     date.setHours(0)
-    //     date.setMinutes(0)
-    //     date.setSeconds(0)
-    //     console.log(date)
-    //     this.getTimesheet(this, date.toISOString())
-    //         .then((tasks) => {
-    //             if (tasks) {
-    //                 this.setState({
-    //                     timesheetTasks: tasks
-    //                 })
-    //             }
-    //         })
-    // }
 
     componentDidUpdate(prevProps) {
 
@@ -116,7 +100,7 @@ export default class TimeSheetTable extends Component {
         axios.put('http://127.0.0.1:3001/workdays/' + date + '/', newWorkday)
             .then(resp => {
 
-                console.log(resp.data);
+                console.log("updated workday");
             }).catch(error => {
 
                 console.log(error);
@@ -131,7 +115,8 @@ export default class TimeSheetTable extends Component {
         for (var i = 0; i < 6; i++) {
             var nextDay = new Date(tempDate);
             nextDay.setDate(tempDate.getDate() + i);
-            dates.push(nextDay);
+            dates.push(nextDay)
+            //   dates.push(nextDay.getFullYear() + "-" + (nextDay.getMonth() + 1) + "-" + nextDay.getDay());
         }
         return dates
     }
@@ -140,6 +125,9 @@ export default class TimeSheetTable extends Component {
         var dates = this.getDaysOfTheWeek(this.props.calendarDate);
         var weekDays = this.state.weekdays;
         var months = this.state.months;
+        var formattedDate;
+
+
         return (
             <tr className="table-header">
                 <th className="col-2r">
@@ -148,7 +136,9 @@ export default class TimeSheetTable extends Component {
                 </th>
 
                 {dates.map(function (date, i) {
-                    var formattedDate = months[date.getMonth()] + " " + date.getDate() + ", " + date.getYear()
+
+                    formattedDate = months[date.getMonth()] + " " + date.getDate() + ", " + date.getFullYear()
+
                     return (
                         <th className="col-2r">
                             <span>{weekDays[i]} </span>
@@ -278,10 +268,18 @@ export default class TimeSheetTable extends Component {
         var worktype = "";
         var date;
         var totalWorkHours = {};
+        var weekdates = [];
         for (const item in timesheet) {
             if (item != "date") {
                 task = timesheet[item]["tasks"]
                 date = new Date(timesheet[item]["date"])
+
+                date.setHours(0)
+                date.setMinutes(0)
+                date.setSeconds(0)
+                date.setMilliseconds(0)
+
+                weekdates.push(timesheet[item]["date"])
 
                 for (const i in task) {
 
@@ -294,7 +292,7 @@ export default class TimeSheetTable extends Component {
                     }
 
                     currentTaskList[worktype][item] = {
-                        "date": date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate(),
+                        "date": date.toISOString(),
                         "end_time": task[i]["end_time"],
                         "note": task[i]["note"],
                         "start_time": task[i]["start_time"]
@@ -316,12 +314,10 @@ export default class TimeSheetTable extends Component {
             }
         }
 
-        console.log(totalWorkHours)
-        console.log(currentTaskList)
-
         this.setState({
             totals: totalWorkHours,
-            timesheetTasks: currentTaskList
+            timesheetTasks: currentTaskList,
+            weekdates: weekdates
         })
 
         //return currentTaskList
@@ -397,16 +393,20 @@ export default class TimeSheetTable extends Component {
         });
     }
 
-    editWorkDayHours(date, weekday, startTime, EndTime, type, oldWorkHourTotal) {
+    editWorkDayHours(date, note, weekday, startTime, endTime, type, oldWorkHourTotal) {
+        var workHours = this.calculateWorkHours(startTime, endTime)
+
+        console.log("date: " + date)
+
         var newWorkDay = {
             "date": date,
-            "start_time": startTime,
-            "note": "",
-            "end_time": EndTime,
+            "start_time": startTime.toISOString(),
+            "note": note,
+            "end_time": endTime.toISOString(),
             "type": type
         }
+
         this.updateTimesheet(newWorkDay, date)
-        var workHours = this.calculateWorkHours(startTime, EndTime)
         this.recalculateHours(weekday, workHours, oldWorkHourTotal)
     }
 
@@ -422,7 +422,9 @@ export default class TimeSheetTable extends Component {
         var context = this;
         var tableColumns = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Delete"];
         var tasks = this.state.timesheetTasks;
-        var variant = "";
+        var weekdates = this.state.weekdates;
+        var info = {};
+        var date = "";
         console.log("going into component map")
         return Object.keys(tasks).map(function (key, index) {
             return (
@@ -438,18 +440,31 @@ export default class TimeSheetTable extends Component {
                         tableColumns.map(function (day, index) {
 
                             if (Object.keys(tasks[key]).length !== 0) {
+                                date = weekdates[index]
 
-                                if (day !== "Delete" && tasks[key][day] !== undefined) {
+                                if (day !== "Delete") {
+                                    if (tasks[key][day] === undefined) {
+                                        info = {
+                                            "start_time": 0,
+                                            "end_time": 0,
+                                            "date": date,
+                                            "note": ''
+                                        }
+                                    }
+
+                                    else {
+                                        info = tasks[key][day]
+                                    }
+
                                     console.log("going into dialog object")
                                     return (
                                         <td className="col-1r">
                                             <SimpleDialogDemo
-                                                key={tasks[key][day]["date"]}
-                                                info={tasks[key][day]}
+                                                key={date}
+                                                info={info}
                                                 task={tasks[key]["worktype"]}
                                                 day={day}
-                                                variant={variant}
-                                                total={0}
+                                                editWorkDayHours={context.editWorkDayHours.bind(context)}
                                             />
                                         </td>
                                     )
@@ -465,14 +480,14 @@ export default class TimeSheetTable extends Component {
                                     </td>
                                     );
                                 }
-                                else {
-                                    return (
-                                        <td className="col-1r">
-                                            {/* <SimpleDialogDemo
-                                                day={day} /> */}
-                                        </td>
-                                    );
-                                }
+                                // else {
+                                //     return (
+                                //         <td className="col-1r">
+                                //             <SimpleDialogDemo
+                                //                 day={day} />
+                                //         </td>
+                                //     );
+                                // }
                             }
                         })
                     }
