@@ -9,6 +9,7 @@ export default class TimeSheetTable extends Component {
         super(props);
 
         this.state = {
+            user: props.user,
             message: "",
             items: [],
             timesheetTasks: {},
@@ -58,7 +59,10 @@ export default class TimeSheetTable extends Component {
             var tempDate = this.setToMonday(this.props.calendarDate)
 
             this.getTimesheet(tempDate.toISOString())
-
+        }
+        else if (prevProps.user !== this.props.user) {
+            // get timesheet corresponding to selected user
+            console.log("changed user to: " + this.props.user)
         }
     }
 

@@ -3,6 +3,8 @@ import NavBar from './components/navbar';
 import SideNavBar from './components/sidenavbar';
 import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
 import Timesheet from './components/timesheet';
+import Paystub from './components/payStubs';
+import { BrowserRouter as Router, Route, Link } from 'react-router-dom';
 
 import './App.css';
 
@@ -25,8 +27,13 @@ const theme = createMuiTheme({
 })
 
 class App extends Component {
-  state = {
+  constructor(props) {
+    super(props);
 
+    this.state = {
+      name: "Cullen Rutherford",
+      uType: "admin"
+    }
   }
 
   componentDidMount() {
@@ -37,12 +44,21 @@ class App extends Component {
     return (
       <React.Fragment>
         <NavBar />
-        <ThemeProvider theme={theme}>
-          <div className="bodyContainer" id="wrapper">
-            <SideNavBar />
-            <Timesheet />
-          </div>
-        </ThemeProvider>
+        <Router>
+          <ThemeProvider theme={theme}>
+            <div className="bodyContainer" id="wrapper">
+              <SideNavBar />
+              <Route exact path="/" render={() => (
+                <Timesheet {...this.state} isAuthed={true} />
+              )} />
+
+              <Route path="/paystub" render={() => (
+                <Paystub {...this.state} isAuthed={true} />
+              )} />
+              {/* <Timesheet /> */}
+            </div>
+          </ThemeProvider>
+        </Router>
       </React.Fragment>
     );
   }

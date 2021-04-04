@@ -435,5 +435,17 @@
       "start_time": "2021-03-20T16:00:00.754Z",
       "worktype": "TEST"
     }
+  ],
+  "Employees":[
+    {
+      "date":"1",
+      "name": "Alistair Therein",
+      "uType": "user"
+    },
+    {
+      "date":"2",
+      "name": "Cullen Rutherford",
+      "uType": "admin"
+    }
   ]
 }

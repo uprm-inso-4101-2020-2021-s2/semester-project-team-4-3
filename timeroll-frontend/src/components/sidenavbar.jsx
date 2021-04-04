@@ -2,6 +2,7 @@ import { getQueriesForElement } from '@testing-library/react';
 import React, { Component } from 'react';
 import { faHome, faTable, faFileInvoice, faCalendarCheck, faCog } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Link } from 'react-router-dom';
 import '../App.css';
 
 
@@ -32,15 +33,15 @@ class SideNavBar extends Component {
         return (
             <div style={this.heading} className={"sideNav bg-light border-right"}>
                 <div className="list-group list-group-flush">
-                    <a style={this.item} className="list-group-item list-group-item-action bg-light">
+                    <Link to={"/"} style={this.item} className="list-group-item list-group-item-action bg-light">
                         <FontAwesomeIcon className="iconsPadding" icon={faTable} />
                                     Timesheet
-                    </a>
+                    </Link>
 
-                    <a style={this.item} className="list-group-item list-group-item-action bg-light">
+                    <Link to={"/paystub"} style={this.item} className="list-group-item list-group-item-action bg-light">
                         <FontAwesomeIcon className="iconsPadding" icon={faFileInvoice} />
                                 Pay Stubs
-                            </a>
+                    </Link>
 
                     <a style={this.item} className="list-group-item list-group-item-action bg-light">
                         <FontAwesomeIcon className="iconsPadding" icon={faCalendarCheck} />
