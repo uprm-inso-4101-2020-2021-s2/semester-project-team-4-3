@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import TimePicker from './timepicker';
 import axios from "axios";
 import SimpleDialogDemo from './workedHoursDialog'
+import SimpleSelect from './selectBox';
+import Box from '@material-ui/core/Box';
 import '../App.css';
 
 export default class TimeSheetTable extends Component {
@@ -84,20 +86,6 @@ export default class TimeSheetTable extends Component {
             .catch(function (error) {
                 console.log(error);
             })
-
-        // const res = axios.get('http://127.0.0.1:3001/Timesheet/' + date)
-        //     .then(async (response) => {
-        //         // handle success
-        //         console.log("updated")
-        //         var tasks = context.formatTimesheetInfo(response.data)
-        //         await context.setState({
-        //             timesheetTasks: tasks
-        //         })
-        //         //  console.log(context.state.timesheetTasks)
-        //     })
-        //     .catch(function (error) {
-        //         console.log(error);
-        //     })
     };
 
     async updateTimesheet(newWorkday, date) {
@@ -163,9 +151,9 @@ export default class TimeSheetTable extends Component {
         width: 800
     };
 
-    updateMessage(event) {
+    updateTask(index) {
         this.setState({
-            message: event.target.value
+            message: this.state.workTypes[index]
         });
 
     }
@@ -484,14 +472,6 @@ export default class TimeSheetTable extends Component {
                                     </td>
                                     );
                                 }
-                                // else {
-                                //     return (
-                                //         <td className="col-1r">
-                                //             <SimpleDialogDemo
-                                //                 day={day} />
-                                //         </td>
-                                //     );
-                                // }
                             }
                         })
                     }
@@ -505,13 +485,16 @@ export default class TimeSheetTable extends Component {
 
     render() {
 
-        let work = this.state.workTypes;
+        let work = [];
         var context = this;
         this.getDaysOfTheWeek(this.props.calendarDate);
 
-        let optionItems = work.map((types) =>
-            <option key={types.id}>{types.id}</option>
-        );
+        console.log(this.state.workTypes)
+
+        this.state.workTypes.map((type, i) => {
+            work.push(type.id)
+        })
+        console.log(work)
         return (
             <div className="container">
                 <div className="tableContainer">
@@ -528,12 +511,16 @@ export default class TimeSheetTable extends Component {
 
                 <hr />
 
-                <span className="addWork"> Add Work Task done: </span>
-                <select onChange={this.updateMessage.bind(this)}>
+                {/* <select onChange={this.updateMessage.bind(this)}>
                     {optionItems}
-                </select>
+                </select> */}
 
                 <div className="addWorkContainer">
+
+                    <span className="addWork"> Add Work Task done: </span>
+                    <Box component="div" style={{ "marginRight": 20 }}>
+                        <SimpleSelect items={work} label="Task Codes" onSelectBoxItemChange={this.updateTask.bind(this)} />
+                    </Box>
 
                     <TimePicker
                         hour={this.state.start_hour}
