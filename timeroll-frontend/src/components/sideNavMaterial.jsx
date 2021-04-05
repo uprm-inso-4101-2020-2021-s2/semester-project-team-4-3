@@ -120,7 +120,7 @@ export default function MiniDrawer(props) {
                     >
                         <FontAwesomeIcon icon={faBars} />
                     </IconButton>
-                    <Typography variant="h6" noWrap style={{ flex: 1 }}>
+                    <Typography variant="h5" noWrap style={{ flex: 1 }}>
                         Timeroll
                         </Typography>
                     <Button color="inherit">{props.name}</Button>

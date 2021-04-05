@@ -59,12 +59,14 @@
 .body {
   height: 100%;
   width: 100%;
+  margin-top: 10px;
 }
 
 .bodyContainer {
   display: flex;
   flex-direction: row;
   position: absolute;
+  padding-top: 64px;
   height: 93%;
   width: 100%;
   overflow:hidden;
@@ -328,4 +330,22 @@ td {
     font-size: 12px;
     line-height: 1.167;
     letter-spacing: -0.01562em;
+  }
+
+  .employeeInfoContainer{
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+    color: #282c34;
+  }
+
+  .employeeInfoContainer .item {
+    display: flex;
+    flex-direction: row;
+    margin-left: 20px;
+  }
+  .employeeInfoContainer .item2 {
+    display: flex;
+    flex-direction: column;
+    margin-left: 20px;
   }

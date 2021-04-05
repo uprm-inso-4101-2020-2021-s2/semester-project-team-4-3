@@ -48,6 +48,9 @@ export default class PayStubsTable extends Component {
 
     componentDidUpdate(prevProps) {
 
+        if (prevProps.uid !== this.props.uid) {
+            //Look for paystubs of new uid (user)
+        }
 
     }
 
@@ -56,8 +59,9 @@ export default class PayStubsTable extends Component {
         axios.get('http://127.0.0.1:3001/Timesheet/' + date)
             .then((response) => {
                 // handle success
-                console.log("going into formatting timesheet")
-                this.formatTimesheetInfo(response.data)
+
+                //get paystub
+
             })
             .catch(function (error) {
                 console.log(error);

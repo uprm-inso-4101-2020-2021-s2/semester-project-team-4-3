@@ -44,7 +44,6 @@ class App extends Component {
   render() {
     return (
       <React.Fragment>
-        <NavBar name={this.state.name} />
         <Router>
           <ThemeProvider theme={theme}>
             <div className="bodyContainer" id="wrapper">
