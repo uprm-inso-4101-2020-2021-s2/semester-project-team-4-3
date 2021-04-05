@@ -3,7 +3,7 @@ import config.dbconfig
 
 class TimesheetDAO:
 
-    def __init__(self):
+    def __init__(self):             #Initiate database connection
         connection_url = "dbname=%s user=%s host = '%s' password=%s port = %s" % (
             config.dbconfig.database_config['dbname'],
             config.dbconfig.database_config['user'],

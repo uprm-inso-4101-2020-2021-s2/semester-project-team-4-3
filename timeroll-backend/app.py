@@ -25,21 +25,21 @@ def create_app():
     db.init_app(app)                                                                        #initiate db connection
     cors.init_app(app)
 
-    with app.app_context():                                                                 #Creates an admin account if it doesn't exist right now. Parameters can be modified for different instances. Remove for production
-       if db.session.query(uaccount).filter_by(email='pepe.r@site.com').count() < 1:
-           db.session.add(uaccount(
-               email = 'pepe.r@site.com',
-               password = guard.hash_password('password123'),
-               first_name = 'Pepe',
-               last_name = 'Rodriguez',
-               phone_number = '939-269-8952',
-               salary = '15',
-               vacation_days = 15,
-               sick_days = 8,
-               username = 'PepeR',
-               role = 'employee',
-           ))
-           db.session.commit()
+    # with app.app_context():                                                                 #Creates an admin account if it doesn't exist right now. Parameters can be modified for different instances. Remove for production
+    #    if db.session.query(uaccount).filter_by(email='parks').count() < 1:
+    #        db.session.add(uaccount(
+    #            first_name='Joe',
+    #            last_name='Biden',
+    #            phone_number='7873432343',
+    #            email = 'joeb@yahoo.com',
+    #            username='jbiden',
+    #            password = guard.hash_password('12345'),
+    #            salary = 90,
+    #            vacation_days = 40,
+    #            sick_days = 20,
+    #            role = 'admin'
+    #        ))
+    #        db.session.commit()
 
 
     from Blueprints.auth import auth as auth_blueprint           #Imports all the blueprints. Routes are stored in the blueprints to prevent large route file

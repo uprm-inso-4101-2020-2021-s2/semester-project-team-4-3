@@ -12,6 +12,8 @@ class WorkdayDAO:
             config.dbconfig.database_config['port'])
         self.conn = psycopg2.connect(connection_url)
 
+
+
     def getWorkDays(self, tid, startdate, enddate):
         cursor = self.conn.cursor()
         query = "select wid, wdate, vacation, tid from workday where tid = %s and wdate between %s and %s order by wdate;"
