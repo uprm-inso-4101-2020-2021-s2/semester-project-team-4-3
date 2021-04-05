@@ -2,17 +2,14 @@ import React, { Component } from 'react';
 
 //Stateless Functional Component
 
-// const NavBar = ({ totalCounters }) => {
-//     return (<nav className="navbar navbar-light bg-light">
-//         <a href="#" className="navbar-brand">
-//             Lab San Antonio <span className="badge badge-pill badge-secondary">
-//                 {totalCounters}
-//             </span>
-//         </a>
-//     </nav>);
-// };
-
 class NavBar extends Component {
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            name: props.name
+        }
+    }
     //state = {  }
     render() {
         return (<nav className="navbar navbar-dark bg-dark navbar-expand-sm shadow">
@@ -22,7 +19,7 @@ class NavBar extends Component {
 
             <ul className="navbar-nav ml-auto px-3">
                 <li className="nav-item mr-auto">
-                    <a className="nav-link"> Employee </a>
+                    <a className="nav-link"> {this.state.name} </a>
                 </li>
                 <li className="nav-item">
                     <a className="nav-link"> Sign out</a>

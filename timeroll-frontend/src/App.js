@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import NavBar from './components/navbar';
 import SideNavBar from './components/sidenavbar';
+import MiniDrawer from './components/sideNavMaterial';
 import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
 import Timesheet from './components/timesheet';
 import Paystub from './components/payStubs';
@@ -43,11 +44,11 @@ class App extends Component {
   render() {
     return (
       <React.Fragment>
-        <NavBar />
+        <NavBar name={this.state.name} />
         <Router>
           <ThemeProvider theme={theme}>
             <div className="bodyContainer" id="wrapper">
-              <SideNavBar />
+              <MiniDrawer name={this.state.name} />
               <Route exact path="/" render={() => (
                 <Timesheet {...this.state} isAuthed={true} />
               )} />

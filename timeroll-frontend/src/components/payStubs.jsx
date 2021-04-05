@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
-import MaterialUIPickers from './calendarPicker';
-import TimeSheetTable from './timesheettable';
+import Box from '@material-ui/core/Box';
+import PayStubsTable from './payStubsTable';
+import Typography from '@material-ui/core/Typography';
 import '../App.css';
 
 class PayStubs extends Component {
@@ -28,10 +29,10 @@ class PayStubs extends Component {
         return (
             <React.Fragment>
                 <div className="body" >
-                    <span> Paystubs </span>
-                    <div className="datepickers">
-                        <MaterialUIPickers calendarDate={this.state.calendarDate} setCalendarDate={this.setCalendarDate.bind(this)} />
-                    </div>
+                    <Typography className="pageTitle" variant="h4" gutterBottom>
+                        Paystubs
+                     </Typography>
+                    <PayStubsTable />
 
                 </div>
             </React.Fragment>
