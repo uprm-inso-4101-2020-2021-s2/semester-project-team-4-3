@@ -1,0 +1,18 @@
+{
+    "users":[
+        {
+            "id": 1,
+            "Last_Name": "Garcia",
+            "Name": "Carlos",
+            "username": "cgarcia@gmail.com",
+            "password": "abc1234"
+        },
+        {
+            "id": 2,
+            "Last_Name": "Romero",
+            "Name": "Carlos",
+            "username": "cromero@gmail.com",
+            "password": "1234abc"
+        }
+    ]
+}

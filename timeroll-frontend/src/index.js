@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import Login from './Login';
+import Routes from './Routes';
 import reportWebVitals from './reportWebVitals';
 import 'bootstrap/dist/css/bootstrap.css';
 
@@ -10,8 +11,9 @@ import 'bootstrap/dist/css/bootstrap.css';
 
 ReactDOM.render(
   <React.StrictMode>
-    {/* <App /> Uncomment*/} 
-    <Login />
+{/*     <App />
+    <Login /> */}
+    <Routes />
   </React.StrictMode>,
   document.getElementById('root')
 );
