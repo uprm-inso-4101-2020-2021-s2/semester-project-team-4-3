@@ -4,10 +4,10 @@ import Cookies from 'universal-cookie';
 const cookies = new Cookies();
 
 class Menu extends Component {
-    cerrarSesion=()=>{
+    signOut=()=>{
         cookies.remove('id', {path: "/"});
         cookies.remove('Last_name', {path: "/"});
-        cookies.remove('nombre', {path: "/"});
+        cookies.remove('Name', {path: "/"});
         cookies.remove('username', {path: "/"});
         window.location.href='./';
     }
@@ -21,14 +21,13 @@ class Menu extends Component {
     render() {
         console.log('id: '+ cookies.get('id'));
         console.log('Last_Name: '+cookies.get('Last_Name'));
-        console.log('name: '+cookies.get('name'));
+        console.log('Name: '+cookies.get('name'));
         console.log('username: '+cookies.get('username'));
         return (
             <div>
-                Menu Principal
-
+                Main Menu
                 <br />
-                <button onClick={()=>this.cerrarSesion()}>Cerrar Sesión</button>
+                <button onClick={()=>this.signOut()}>Sign Out</button>
             </div>
         );
     }

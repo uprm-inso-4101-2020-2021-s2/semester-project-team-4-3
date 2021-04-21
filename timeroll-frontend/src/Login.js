@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Component } from 'react';
 import Logo from './logo.svg';
 import {BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import './App.js';
@@ -8,42 +8,51 @@ import axios from 'axios';
 import Cookies from 'universal-cookie';
 
 
-const baseUrl="http://localhost:3000/users";
+const baseUrl="http://localhost:3005/users";
 const cookies = new Cookies();
 
 
 class Login extends React.Component{
     state={
-        username:'',
-        pwd:''
+        form:{
+            username: '',
+            password: ''
+        }
     }
 
-    handleChange = (e) =>{
-        const {name,value} = e.target
-        this.setState({[name]:value})
+    handleChange = async e =>{
+        await this.setState({
+            form:{
+                ...this.state.form,
+                [e.target.name]: e.target.value
+            }
+        })
+        // const {name,value} = e.target
+        // this.setState({[name]:value})
+        console.log(this.state.form);
     }
 
     handleSubmit = (e) =>{
         e.preventDefault();
-        <Router path="/App" />
+        <Router path="/Menu" />
     }
 
-    initSess=()=>{
-        axios.get(baseUrl, {params: {username: this.state.form.username, password: this.state.form.password}})
+    initSess=async()=>{
+        await axios.get(baseUrl, {params: {username: this.state.form.username, password: this.state.form.password}})
         .then(response=>{
             return response.data;
         })
         .then(response=>{
             if(response.length>0){
-                var respuesta=response[0];
-                cookies.set('id', respuesta.id, {path: "/"});
-                cookies.set('Last_Name', respuesta.Last_Name, {path: "/"});
-                cookies.set('Name', respuesta.name, {path: "/"});
-                cookies.set('username', respuesta.username, {path: "/"});
-                alert(`Bienvenido ${respuesta.nombre} ${respuesta.apellido_paterno}`);
-                window.location.href="./menu";
+                var response=response[0];
+                cookies.set('id', response.id, {path: "/"});
+                cookies.set('Last_Name', response.Last_Name, {path: "/"});
+                cookies.set('Name', response.name, {path: "/"});
+                cookies.set('username', response.username, {path: "/"});
+                alert(`Welcome ${response.Name} ${response.Last_Name}`);
+                window.location.href="./App";
             }else{
-                alert('El usuario o la contraseña no son correctos');
+                alert('Username or password is incorrect');
             }
         })
         .catch(error=>{
@@ -63,7 +72,7 @@ class Login extends React.Component{
                     <div className="App">
                         <form onSubmit = {this.handleSubmit}>
                             <input type='username' name='username' placeholder='username...' required onChange={this.handleChange}/>
-                            <input type='password' name='pwd' placeholder='password' required onChange={this.handleChange}/>
+                            <input type='password' name='password' placeholder='password...' required onChange={this.handleChange}/>
                             <button onClick={()=>this.initSess()}>Login</button>
                             {/* <button onSubmit={this.handleSubmit}>Login</button> */}
                             
