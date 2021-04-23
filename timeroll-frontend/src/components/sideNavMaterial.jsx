@@ -159,7 +159,7 @@ export default function MiniDrawer(props) {
                         <ListItemText primary="Pay Stubs" />
                     </ListItem>
 
-                    <ListItem button key="Requests" >
+                    <ListItem button key="Requests" component={Link} to="/requests">
                         <ListItemIcon> <FontAwesomeIcon icon={faCalendarCheck} size='2x' /> </ListItemIcon>
                         <ListItemText primary="Requests" />
                     </ListItem>

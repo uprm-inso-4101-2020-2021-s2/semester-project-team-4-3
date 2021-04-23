@@ -5,6 +5,11 @@ import MaterialUIPickers from './calendarPicker';
 import SimpleSelect from './selectBox';
 import Divider from '@material-ui/core/Divider';
 import '../App.css';
+import { makeStyles } from '@material-ui/core/styles';
+import Card from '@material-ui/core/Card';
+import CardActions from '@material-ui/core/CardActions';
+import CardContent from '@material-ui/core/CardContent';
+import Button from '@material-ui/core/Button';
 
 class AdminPayStubs extends Component {
     constructor(props) {
@@ -37,7 +42,7 @@ class AdminPayStubs extends Component {
                 "benefits": 50,
                 "net": 1644
             },
-            employeeInfo: {
+            employeeInfo: [{
                 "name": "Cullen Rutherford",
                 "salary": "12.50",
                 "deductions": [{
@@ -51,15 +56,41 @@ class AdminPayStubs extends Component {
                     "type": "medical",
                     "rate": 100
                 }]
-            }
+            }]
         }
     }
 
+    useStyles = makeStyles({
+        root: {
+            minWidth: 275,
+            marginLeft: 40,
+            marginTop: 20,
+            padding: 40
+        },
+        bullet: {
+            display: 'inline-block',
+            margin: '0 2px',
+            transform: 'scale(0.8)',
+        },
+        title: {
+            fontSize: 14,
+        },
+        pos: {
+            marginBottom: 12,
+        },
+        content: {
+            margin: 50,
+            padding: 40
+        }
+    });
+
     onSelectBoxItemChange(item) {
+        console.log(item);
         this.setState({
             index: item
         });
     }
+
 
     setCalendarDate(date) {
         this.setState({
@@ -141,39 +172,92 @@ class AdminPayStubs extends Component {
     renderEmployeeInfo() {
         var employeeInfo = this.state.employeeInfo;
         return (
-            <Box component="div" className="employeeInfoContainer">
-                <Typography variant="h5" style={{ "marginBottom": 10 }}>Employee Information</Typography>
+            <Card className={this.useStyles.root}>
+                <CardContent style={{ "marginLeft": 50 }}>
+                    <Typography className={this.useStyles.title} color="textSecondary" gutterBottom>
+                        Employee Information
+                    </Typography>
+                    <Typography variant="h5" component="h2">
+                        {employeeInfo[0]["name"]}
+                    </Typography>
 
-                <div className="item">
-                    <Typography variant="h6">Name: </Typography>
-                    <Typography variant="h6" style={{ "marginLeft": 20 }}>{employeeInfo["name"]}</Typography>
-                </div>
+                    <div style={{ "marginTop": 15 }}>
+                        <Typography className={this.useStyles.pos} color="textSecondary">
+                            Salary
+                        </Typography>
+                        <Typography style={{ "marginLeft": 20 }} variant="body2" component="p">
+                            {employeeInfo[0]["salary"]}
+                        </Typography>
+                    </div>
 
-                <div className="item">
-                    <Typography variant="h6">Salary:</Typography>
-                    <Typography variant="h6" style={{ "marginLeft": 20 }}>{employeeInfo["salary"]}</Typography>
-                </div>
-                <div className="item2">
-                    <Typography variant="h6">Deductions:</Typography>
-                    {employeeInfo["deductions"].map((item, index) => {
-                        return (
-                            <Typography variant="h6" style={{ "marginLeft": 40 }}>
-                                { item["type"]}
-                            </Typography>
-                        )
-                    })}
-                </div>
-                <div className="item2">
-                    <Typography variant="h6">Benefits:</Typography>
-                    {employeeInfo["benefits"].map((item, index) => {
-                        return (
-                            <Typography variant="h6" style={{ "marginLeft": 40 }}>
-                                { item["type"]}
-                            </Typography>
-                        )
-                    })}
-                </div>
-            </Box>
+                    <div style={{ "marginTop": 15 }}>
+                        <Typography className={this.useStyles.pos} color="textSecondary">
+                            Deductions
+                        </Typography>
+                        {employeeInfo[0]["deductions"].map((item, index) => {
+                            return (
+                                <Typography style={{ "marginLeft": 20 }} variant="body2" component="p">
+                                    { item["type"]}
+                                </Typography>
+                            )
+                        })}
+                    </div>
+
+                    <div style={{ "marginTop": 15 }}>
+                        <Typography className={this.useStyles.pos} color="textSecondary">
+                            Benefits
+                        </Typography>
+                        {employeeInfo[0]["benefits"].map((item, index) => {
+                            return (
+                                <Typography style={{ "marginLeft": 20 }} variant="body2" component="p">
+                                    { item["type"]}
+                                </Typography>
+                            )
+                        })}
+                    </div>
+
+                    {/* <Typography variant="body2" component="p">
+                        well meaning and kindly.
+                    <br />
+                        {'"a benevolent smile"'}
+                    </Typography> */}
+                </CardContent>
+            </Card>
+
+
+            // <Box component="div" className="employeeInfoContainer">
+            //     <Typography variant="h5" style={{ "marginBottom": 10, "marginTop": 10 }}>Employee Information</Typography>
+
+            //     <div className="item">
+            //         <Typography variant="h6">Name: </Typography>
+            //         <Typography variant="h6" style={{ "marginLeft": 20 }}>{employeeInfo[0]["name"]}</Typography>
+            //     </div>
+
+            //     <div className="item">
+            //         <Typography variant="h6">Salary:</Typography>
+            //         <Typography variant="h6" style={{ "marginLeft": 20 }}>{employeeInfo[0]["salary"]}</Typography>
+            //     </div>
+            //     <div className="item2">
+            //         <Typography variant="h6">Deductions:</Typography>
+            //         {employeeInfo[0]["deductions"].map((item, index) => {
+            //             return (
+            //                 <Typography variant="h6" style={{ "marginLeft": 40 }}>
+            //                     { item["type"]}
+            //                 </Typography>
+            //             )
+            //         })}
+            //     </div>
+            //     <div className="item2">
+            //         <Typography variant="h6">Benefits:</Typography>
+            //         {employeeInfo[0]["benefits"].map((item, index) => {
+            //             return (
+            //                 <Typography variant="h6" style={{ "marginLeft": 40 }}>
+            //                     { item["type"]}
+            //                 </Typography>
+            //             )
+            //         })}
+            //     </div>
+            // </Box>
         )
     }
 

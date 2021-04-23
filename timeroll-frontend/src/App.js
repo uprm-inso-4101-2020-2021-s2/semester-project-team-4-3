@@ -1,10 +1,9 @@
 import React, { Component } from 'react';
-import NavBar from './components/navbar';
-import SideNavBar from './components/sidenavbar';
 import MiniDrawer from './components/sideNavMaterial';
 import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
 import Timesheet from './components/timesheet';
 import Paystub from './components/payStubs';
+import Requests from './components/requests';
 import { BrowserRouter as Router, Route, Link } from 'react-router-dom';
 
 import './App.css';
@@ -33,7 +32,7 @@ class App extends Component {
 
     this.state = {
       name: "Cullen Rutherford",
-      uType: "admin"
+      uType: "user"
     }
   }
 
@@ -55,7 +54,11 @@ class App extends Component {
               <Route path="/paystub" render={() => (
                 <Paystub {...this.state} isAuthed={true} />
               )} />
-              {/* <Timesheet /> */}
+
+              <Route path="/requests" render={() => (
+                <Requests {...this.state} isAuthed={true} />
+              )} />
+
             </div>
           </ThemeProvider>
         </Router>
