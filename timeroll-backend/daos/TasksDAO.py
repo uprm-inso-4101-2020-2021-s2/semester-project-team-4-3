@@ -29,3 +29,11 @@ class TasksDAO:
         wtid = cursor.fetchone()
         self.conn.commit()
         return wtid
+
+    def updateTasks(self, wtid, time, type):
+        cursor = self.conn.cursor()
+        query = "update worktasks set hours_worked = %s, work_type = %s WHERE wtid = %s returning wtid, work_type, hours_worked;"
+        cursor.execute(query, (time, type, wtid))
+        result = cursor.fetchone()
+        self.conn.commit()
+        return result

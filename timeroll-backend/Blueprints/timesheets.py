@@ -37,6 +37,7 @@ def current_timesheet():
         req = flask.request.get_json(force=True)
         if not req or request.args:
             return jsonify(Error = "No argument received."), 400
+        return TimesheetHandler().editWorkday(uid,req)
 
     else:
         return jsonify(Error = "Method not allowed."), 405
@@ -56,11 +57,20 @@ def employeetimesheet(uid):
         else:
             return TimesheetHandler().getTimesheet(uid)         #Gets the timesheet of the given employee for the current date.
 
+    elif request.method == 'POST':                                  #Adds a workday given a workday object via json (including nested work tasks within it.)
+        req = flask.request.get_json(force=True)                    #If the timesheet which the workday belongs to does not exist, creates the needed timesheet.
+        if not TimesheetDAO().getTimesheet(uid, req['date']):
+            TimesheetHandler().createTimesheet(uid, req)
+            return "Timesheet Created", 200
+        else:
+            return TimesheetHandler().addWorkday(uid, req)          #Adds received workday and worktask objects to the timesheet which exists.
 
     elif request.method == 'PUT':                       #Pending implementation: Allows an admin to update a user's timesheet
         req = flask.request.get_json(force=True)
         if not req or request.args:
             return jsonify(Error = "No argument received."), 400
+
+        return TimesheetHandler().editWorkday(uid, req)
 
     else:
         return jsonify(Error = "Method not allowed."), 405

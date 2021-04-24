@@ -16,19 +16,26 @@ class WorkdayDAO:
 
     def getWorkDays(self, tid, startdate, enddate):
         cursor = self.conn.cursor()
-        query = "select wid, wdate, vacation, tid from workday where tid = %s and wdate between %s and %s order by wdate;"
+        query = "select wid, wdate, vacation, tid, note from workday where tid = %s and wdate between %s and %s order by wdate;"
         cursor.execute(query, (tid, startdate, enddate))
         result = []
         for row in cursor:
             result.append(row)
         return result
 
-    def createWorkday(self, date, vacation, tid):
+    def createWorkday(self, date, vacation, tid, note):
         cursor = self.conn.cursor()
-        query = "insert into workday(wdate, vacation, tid) values (%s, %s, %s) returning wid;"
-        cursor.execute(query, (date, vacation, tid,))
+        query = "insert into workday(wdate, vacation, tid, note) values (%s, %s, %s, %s) returning wid;"
+        cursor.execute(query, (date, vacation, tid, note))
         wid = cursor.fetchone()
         self.conn.commit()
         return wid
 
+    def updateWorkDay(self, wid, note):
+        cursor = self.conn.cursor()
+        query = "update workday set note = %s where wid = %s returning wid;"
+        cursor.execute(query, (note, wid))
+        wid = cursor.fetchone()
+        self.conn.commit()
+        return wid
 
