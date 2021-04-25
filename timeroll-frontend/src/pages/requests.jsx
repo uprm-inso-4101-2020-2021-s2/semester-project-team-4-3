@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import MaterialUIPickers from './calendarPicker';
-import RequestsTable from './requestsTable';
-import SimpleSelect from './selectBox';
+import MaterialUIPickers from '../components/calendarPicker';
+import RequestsTable from '../components/requestsTable';
+import SimpleSelect from '../components/selectBox';
 import Box from '@material-ui/core/Box';
 import Typography from '@material-ui/core/Typography';
 import axios from "axios";

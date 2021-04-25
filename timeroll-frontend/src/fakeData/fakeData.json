@@ -438,13 +438,17 @@
   ],
   "Employees":[
     {
-      "date":"1",
+      "uid":"1",
       "name": "Alistair Therein",
+      "date": "alistair@gmail.com",
+      "password": "123",
       "uType": "user"
     },
     {
-      "date":"2",
+      "uid":"2",
       "name": "Cullen Rutherford",
+      "date": "cullen@gmail.com",
+      "password": "321",
       "uType": "admin"
     }
   ]

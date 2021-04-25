@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import MaterialUIPickers from './calendarPicker';
-import TimeSheetTable from './timesheettable';
-import SimpleSelect from './selectBox';
+import MaterialUIPickers from '../components/calendarPicker';
+import TimeSheetTable from '../components/timesheettable';
+import SimpleSelect from '../components/selectBox';
 import Box from '@material-ui/core/Box';
 import axios from "axios";
 import '../App.css';

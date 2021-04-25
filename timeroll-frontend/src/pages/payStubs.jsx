@@ -3,13 +3,13 @@ import Box from '@material-ui/core/Box';
 import AppBar from '@material-ui/core/AppBar';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
-import PayStubsTable from './payStubsTable';
+import PayStubsTable from '../components/payStubsTable';
 import Typography from '@material-ui/core/Typography';
-import AdminPayStubs from './adminPayStubs';
+import AdminPayStubs from '../components/adminPayStubs';
 import { Link, Route, BrowserRouter, Switch, Redirect } from "react-router-dom";
 import axios from "axios";
 import '../App.css';
-import AdminPayStubsTable from './adminPayStubsTable';
+import AdminPayStubsTable from '../components/adminPayStubsTable';
 
 class PayStubs extends Component {
     constructor(props) {

@@ -17,7 +17,8 @@ import ListItemText from '@material-ui/core/ListItemText';
 
 import { faHome, faBars, faTable, faFileInvoice, faCalendarCheck, faCog, faChevronRight, faChevronLeft } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Link } from 'react-router-dom';
+import { Link, withRouter } from 'react-router-dom';
+import store from 'store';
 
 const drawerWidth = 240;
 
@@ -86,7 +87,7 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-export default function MiniDrawer(props) {
+const MiniDrawer = props => {
     const classes = useStyles();
     const theme = useTheme();
     const [open, setOpen] = React.useState(false);
@@ -98,6 +99,12 @@ export default function MiniDrawer(props) {
     const handleDrawerClose = () => {
         setOpen(false);
     };
+
+    const handleLogout = () => {
+        store.remove('loggedIn');
+        props.logOut();
+        props.history.push('/login');
+    }
 
     return (
         <div className={classes.root}>
@@ -124,7 +131,7 @@ export default function MiniDrawer(props) {
                         Timeroll
                         </Typography>
                     <Button color="inherit">{props.name}</Button>
-                    <Button color="inherit">Logout</Button>
+                    <Button color="inherit" onClick={handleLogout} >Logout</Button>
 
                 </Toolbar>
 
@@ -149,7 +156,7 @@ export default function MiniDrawer(props) {
                 </div>
                 <Divider />
                 <List>
-                    <ListItem button key="Timesheet" component={Link} to="/">
+                    <ListItem button key="Timesheet" component={Link} to="/timesheet">
                         <ListItemIcon> <FontAwesomeIcon icon={faTable} size='2x' /> </ListItemIcon>
                         <ListItemText primary="Timesheet" />
                     </ListItem>
@@ -168,14 +175,9 @@ export default function MiniDrawer(props) {
                         <ListItemIcon> <FontAwesomeIcon icon={faCog} size='2x' /> </ListItemIcon>
                         <ListItemText primary="Settings" />
                     </ListItem>
-                    {/* {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
-                        <ListItem button key={text}>
-                            <ListItemIcon>{index % 2 === 0 ? <FontAwesomeIcon icon={faChevronRight} /> : <FontAwesomeIcon icon={faChevronRight} />}</ListItemIcon>
-                            <ListItemText primary={text} />
-                        </ListItem>
-                    ))} */}
                 </List>
             </Drawer>
         </div>
     );
-}
+};
+export default withRouter(MiniDrawer);

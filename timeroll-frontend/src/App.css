@@ -37,6 +37,41 @@
   }
 }
 
+.loginCard{
+  background-color: #61dafb;
+  min-width: 500;
+  text-align: center;
+  align-items: center;
+  position: fixed;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  /* bring your own prefixes */
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  box-shadow: #6C7A89;
+}
+
+.loginTitle{
+  background-color: #365aad; 
+  width: 500;
+  box-shadow: #6C7A89;
+  padding-bottom: 170;
+  padding-top: 100;
+}
+
+.cardContent{
+  align-items: center;
+  background-color: #fff;
+  display: flex;
+  flex-direction: column;
+}
+
+.MuiTypography-colorTextSecondary {
+  color: #fff;
+}
+
 .iconsPadding {
   margin-right: 20px;
   margin-top: 2px;
