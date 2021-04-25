@@ -41,7 +41,7 @@ export default function MaterialUIPickers(props) {
                 format="MM/dd/yyyy"
                 margin="normal"
                 id="date-picker-inline"
-                label="Timesheet Date"
+                label={props.label}
                 value={selectedDate}
                 onChange={handleDateChange}
                 KeyboardButtonProps={{

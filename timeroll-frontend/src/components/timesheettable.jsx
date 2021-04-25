@@ -489,12 +489,10 @@ export default class TimeSheetTable extends Component {
         var context = this;
         this.getDaysOfTheWeek(this.props.calendarDate);
 
-        console.log(this.state.workTypes)
-
         this.state.workTypes.map((type, i) => {
             work.push(type.id)
         })
-        console.log(work)
+
         return (
             <div className="container">
                 <div className="tableContainer">
@@ -510,10 +508,6 @@ export default class TimeSheetTable extends Component {
                 </div>
 
                 <hr />
-
-                {/* <select onChange={this.updateMessage.bind(this)}>
-                    {optionItems}
-                </select> */}
 
                 <div className="addWorkContainer">
 

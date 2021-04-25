@@ -436,20 +436,54 @@
       "worktype": "TEST"
     }
   ],
-  "Employees":[
+  "Employees": [
     {
-      "uid":"1",
+      "uid": "1",
       "name": "Alistair Therein",
       "date": "alistair@gmail.com",
       "password": "123",
       "uType": "user"
     },
     {
-      "uid":"2",
+      "uid": "2",
       "name": "Cullen Rutherford",
       "date": "cullen@gmail.com",
       "password": "321",
       "uType": "admin"
+    }
+  ],
+  "Requests": [
+    {
+      "date": "2021-03-30T04:00:00.000Z",
+      "start_date": "2021-06-01T04:00:00.000Z",
+      "end_date": "2021-06-03T04:00:00.000Z",
+      "type": "vacation",
+      "status": 1
+    },
+    {
+      "date": "2021-03-30T04:00:00.000Z",
+      "start_date": "2021-05-01T04:00:00.000Z",
+      "end_date": "2021-05-03T04:00:00.000Z",
+      "type": "sick",
+      "status": 0
+    },
+    {
+      "date": "2021-04-25T06:49:04.287Z",
+      "start_date": "2021-04-25T06:48:56.815Z",
+      "end_date": "2021-04-25T06:48:56.815Z",
+      "type": [
+        "vacation",
+        "sick",
+        "other"
+      ],
+      "status": 0
+    },
+    {
+      "date": "2021-04-25T06:51:07.370Z",
+      "start_date": "2021-04-25T06:50:53.134Z",
+      "end_date": "2021-04-25T06:50:53.134Z",
+      "type": "other",
+      "status": 0
     }
   ]
 }

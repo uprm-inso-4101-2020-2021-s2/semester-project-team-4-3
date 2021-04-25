@@ -3,13 +3,19 @@ import { faCheck } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import axios from "axios";
 import '../App.css';
+import MaterialUIPickers from '../components/calendarPicker';
+import SimpleSelect from '../components/selectBox';
+import Box from '@material-ui/core/Box';
 
 export default class RequestsTable extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            headers: ["rdate", "type", "start_date", "end_date", "status"],
+            startDate: new Date(),
+            endDate: new Date(),
+            rTypes: ["vacation", "sick", "other"],
+            headers: ["date", "type", "start_date", "end_date", "status"],
             months: ["January",
                 "February",
                 "March",
@@ -22,46 +28,70 @@ export default class RequestsTable extends Component {
                 "October",
                 "November",
                 "December"],
-            requests: [
-                {
-                    "rdate": "2021-03-30T04:00:00.000Z",
-                    "start_date": "2021-06-01T04:00:00.000Z",
-                    "end_date": "2021-06-03T04:00:00.000Z",
-                    "type": "vacation",
-                    "status": 1
-                },
-                {
-                    "rdate": "2021-03-30T04:00:00.000Z",
-                    "start_date": "2021-05-01T04:00:00.000Z",
-                    "end_date": "2021-05-03T04:00:00.000Z",
-                    "type": "sick",
-                    "status": 0
-                }
-            ]
+            requests: [],
+            rType: ""
         }
     }
 
-    componentDidUpdate(prevProps) {
-
-        if (prevProps.uid !== this.props.uid) {
-            //Look for paystubs of new uid (user)
-        }
+    componentDidMount() {
+        this.getRequests();
 
     }
 
-    async getPaystubs(date) {
+    async getRequests() {
 
-        axios.get('http://127.0.0.1:3001/Timesheet/' + date)
+        axios.get('http://127.0.0.1:3001/Requests')
             .then((response) => {
-                // handle success
+                var requests = [];
+                for (var i in response.data) {
+                    requests.push(response.data[i]);
+                }
 
-                //get paystub
-
+                this.setState({
+                    requests: requests
+                })
             })
             .catch(function (error) {
                 console.log(error);
             })
     };
+
+    async postRequest() {
+        var requests = this.state.requests;
+        var today = (new Date()).toISOString()
+        var newRequest = {
+            "date": today,
+            "start_date": this.state.startDate.toISOString(),
+            "end_date": this.state.endDate.toISOString(),
+            "type": this.state.rType,
+            "status": 0
+        }
+        requests.push(newRequest);
+        axios.post('http://127.0.0.1:3001/Requests',
+            newRequest,
+            { headers: { 'Content-Type': 'application/json' } });
+        this.setState({
+            requests: requests
+        });
+    };
+
+    setStartCalendarDate(date) {
+        this.setState({
+            startDate: date
+        });
+    }
+
+    setEndCalendarDate(date) {
+        this.setState({
+            endDate: date
+        });
+    }
+
+    updaterType(index) {
+        this.setState({
+            rType: this.state.rTypes[index]
+        });
+    }
 
     renderHeader() {
 
@@ -150,6 +180,35 @@ export default class RequestsTable extends Component {
                             {this.renderRows()}
                         </tbody>
                     </table>
+                </div>
+
+                <hr />
+
+                <div className="addWorkContainer">
+
+                    <span className="addWork" style={{ "marginTop": 20 }}> Add Work Task done: </span>
+                    <Box component="div" style={{ "marginRight": 20, "marginTop": 20 }}>
+                        <SimpleSelect
+                            items={this.state.rTypes}
+                            onSelectBoxItemChange={this.updaterType.bind(this)} />
+                    </Box>
+
+                    <MaterialUIPickers
+                        calendarDate={this.state.startDate}
+                        label="Select Start Date"
+                        setCalendarDate={this.setStartCalendarDate.bind(this)} />
+
+                    <MaterialUIPickers
+                        calendarDate={this.state.endDate}
+                        label="Select End Date"
+                        setCalendarDate={this.setEndCalendarDate.bind(this)} />
+
+                    <button
+                        className="submitButton"
+                        style={{ "marginLeft": 20, "marginTop": 20 }}
+                        onClick={this.postRequest.bind(this)} >
+                        Request
+                    </button>
                 </div>
 
             </div>

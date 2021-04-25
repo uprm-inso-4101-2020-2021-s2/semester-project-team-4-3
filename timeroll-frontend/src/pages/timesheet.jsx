@@ -78,7 +78,10 @@ class Timesheet extends Component {
                 <div className="body" >
                     <div className="datepickers">
                         {this.compareAdmin()}
-                        <MaterialUIPickers calendarDate={this.state.calendarDate} setCalendarDate={this.setCalendarDate.bind(this)} />
+                        <MaterialUIPickers
+                            label="Timesheet Date"
+                            calendarDate={this.state.calendarDate}
+                            setCalendarDate={this.setCalendarDate.bind(this)} />
                     </div>
                     <TimeSheetTable user={this.state.name} calendarDate={this.state.calendarDate} />
                 </div>

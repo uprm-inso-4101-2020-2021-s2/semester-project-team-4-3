@@ -9,15 +9,6 @@ import 'bootstrap/dist/css/bootstrap.css';
 
 ReactDOM.render(
   <React.StrictMode>
-    {/* <Router> 
-        <Route exact path="/" render={() => (
-                <Login />
-              )} />
-        <Route exact path="/app" render={() => (
-                <App />
-              )} />
-
-    </Router> */}
     <App />
   </React.StrictMode>,
   document.getElementById('root')

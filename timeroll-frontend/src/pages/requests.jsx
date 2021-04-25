@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import MaterialUIPickers from '../components/calendarPicker';
 import RequestsTable from '../components/requestsTable';
 import SimpleSelect from '../components/selectBox';
 import Box from '@material-ui/core/Box';
@@ -12,7 +11,6 @@ class Requests extends Component {
         super(props);
 
         this.state = {
-            calendarDate: new Date(),
             name: props.name,
             uType: props.uType,
             employees: []
@@ -63,6 +61,10 @@ class Requests extends Component {
         return this.state.calendarDate;
     }
 
+    handleAddRequest() {
+
+    }
+
     compareAdmin() {
         if (this.state.uType === "admin") {
             return (
@@ -83,7 +85,9 @@ class Requests extends Component {
                     <div className="datepickers">
                         {this.compareAdmin()}
                     </div>
-                    <RequestsTable user={this.state.name} calendarDate={this.state.calendarDate} />
+                    <RequestsTable user={this.state.name} />
+
+                    <br />
                 </div>
             </React.Fragment>
         );

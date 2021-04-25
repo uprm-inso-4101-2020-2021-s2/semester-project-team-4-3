@@ -41,7 +41,7 @@ const Login = props => {
             className="loginCard"
         >
             <form >
-                <div style={{ "width": 500, "backgroundColor": "#365aad", "paddingBottom": 150, "paddingTop": 100 }}>
+                <div style={{ "width": 500, "backgroundColor": "#365aad", "paddingBottom": 150, "paddingTop": 150 }}>
                     <Typography variant="h1" color="textSecondary">
                         TimeRoll
                 </Typography>
