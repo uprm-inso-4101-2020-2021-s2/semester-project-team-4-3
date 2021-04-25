@@ -15,7 +15,7 @@ export default class RequestsTable extends Component {
             startDate: new Date(),
             endDate: new Date(),
             rTypes: ["vacation", "sick", "other"],
-            headers: ["date", "type", "start_date", "end_date", "status"],
+            headers: ["date", "type", "start_date", "end_date", "status", "delete"],
             months: ["January",
                 "February",
                 "March",
@@ -50,6 +50,16 @@ export default class RequestsTable extends Component {
                 this.setState({
                     requests: requests
                 })
+            })
+            .catch(function (error) {
+                console.log(error);
+            })
+    };
+
+    async deleteRequest(item) {
+        axios.delete('http://127.0.0.1:3001/Requests/' + item)
+            .then((response) => {
+                console.log("deleted request")
             })
             .catch(function (error) {
                 console.log(error);
@@ -93,6 +103,16 @@ export default class RequestsTable extends Component {
         });
     }
 
+    handleItemDelete(index) {
+        var item = this.state.requests[index].date;
+        var requests = this.state.requests;
+        requests.splice(index, 1);
+        this.setState({
+            requests: requests
+        });
+        this.deleteRequest(item);
+    }
+
     renderHeader() {
 
         return (
@@ -120,13 +140,14 @@ export default class RequestsTable extends Component {
     renderRows() {
         var headers = this.state.headers;
         var months = this.state.months;
+        var context = this;
         var date;
         return this.state.requests.map(function (item, index) {
             return (
                 <tr key={"item-" + index} className="table-row">
 
                     {
-                        headers.map(function (key, index) {
+                        headers.map(function (key, i) {
                             if (key === "type") {
                                 return (
                                     <td className="col-3r">
@@ -146,6 +167,18 @@ export default class RequestsTable extends Component {
                                         <span>  Pending </span>
                                     </td>
                                 );
+                            }
+                            else if (key === "delete") {
+                                return (
+                                    <td className="col-1r">
+                                        <button
+                                            onClick={context.handleItemDelete.bind(context, index)}
+                                            className="deleteButton"
+                                        >
+                                            Delete
+                                        </button>
+                                    </td>
+                                )
                             }
                             else {
                                 date = new Date(item[key])
@@ -186,7 +219,7 @@ export default class RequestsTable extends Component {
 
                 <div className="addWorkContainer">
 
-                    <span className="addWork" style={{ "marginTop": 20 }}> Add Work Task done: </span>
+                    <span className="addWork" style={{ "marginTop": 20 }}> Add Request Type: </span>
                     <Box component="div" style={{ "marginRight": 20, "marginTop": 20 }}>
                         <SimpleSelect
                             items={this.state.rTypes}
