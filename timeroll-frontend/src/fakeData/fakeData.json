@@ -349,6 +349,87 @@
           }
         ]
       }
+    },
+    {
+      "date": "2021-04-19T04:00:00.000Z",
+      "Monday": {
+        "date": "2021-04-19T04:00:00.000Z",
+        "vacation": "false",
+        "wid": "1",
+        "tasks": [
+          {
+            "end_time": "",
+            "note": "",
+            "start_time": "",
+            "worktype": "FACTU"
+          }
+        ]
+      },
+      "Tuesday": {
+        "date": "2021-04-20T04:00:00.000Z",
+        "vacation": "false",
+        "wid": "1",
+        "tasks": [
+          {
+            "end_time": "",
+            "note": "",
+            "start_time": "",
+            "worktype": "FACTU"
+          }
+        ]
+      },
+      "Wednesday": {
+        "date": "2021-04-21T04:00:00.000Z",
+        "vacation": "false",
+        "wid": "1",
+        "tasks": [
+          {
+            "end_time": "",
+            "note": "",
+            "start_time": "",
+            "worktype": "FACTU"
+          }
+        ]
+      },
+      "Thursday": {
+        "date": "2021-04-22T04:00:00.000Z",
+        "vacation": "false",
+        "wid": "1",
+        "tasks": [
+          {
+            "end_time": "",
+            "note": "",
+            "start_time": "",
+            "worktype": "FACTU"
+          }
+        ]
+      },
+      "Friday": {
+        "date": "2021-04-23T04:00:00.000Z",
+        "vacation": "false",
+        "wid": "1",
+        "tasks": [
+          {
+            "end_time": "",
+            "note": "",
+            "start_time": "",
+            "worktype": "FACTU"
+          }
+        ]
+      },
+      "Saturday": {
+        "date": "2021-04-24T04:00:00.000Z",
+        "vacation": "false",
+        "wid": "1",
+        "tasks": [
+          {
+            "end_time": "",
+            "note": "",
+            "start_time": "",
+            "worktype": "FACTU"
+          }
+        ]
+      }
     }
   ],
   "workdays": [

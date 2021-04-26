@@ -214,9 +214,14 @@ export default class SimpleDialogDemo extends Component {
     };
 
     render() {
+
         return (
             <div>
-                <Button key={this.state.totals} variant="outlined" color={this.state.totals === "0.00" ? "secondary" : "primary"} onClick={this.handleClickOpen}>
+                <Button key={this.state.totals}
+                    variant="outlined"
+                    color={this.state.totals === "0.00" || this.state.totals === NaN || this.state.totals === "-"
+                        ? "secondary" : "primary"}
+                    onClick={this.handleClickOpen}>
                     {this.state.totals}
                 </Button>
 

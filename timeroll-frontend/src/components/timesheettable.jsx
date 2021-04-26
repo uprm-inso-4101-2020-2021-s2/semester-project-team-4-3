@@ -50,6 +50,17 @@ export default class TimeSheetTable extends Component {
         }
     }
 
+    componentDidMount() {
+        this.props.calendarDate.setHours(0)
+        this.props.calendarDate.setMinutes(0)
+        this.props.calendarDate.setSeconds(0)
+
+        var tempDate = this.setToMonday(this.props.calendarDate)
+        console.log(tempDate)
+
+        this.getTimesheet(this, tempDate.toISOString())
+    }
+
     componentDidUpdate(prevProps) {
 
         if (prevProps.calendarDate !== this.props.calendarDate) {
@@ -60,7 +71,7 @@ export default class TimeSheetTable extends Component {
 
             var tempDate = this.setToMonday(this.props.calendarDate)
 
-            this.getTimesheet(tempDate.toISOString())
+            this.getTimesheet(this, tempDate.toISOString())
         }
         else if (prevProps.user !== this.props.user) {
             // get timesheet corresponding to selected user
@@ -75,21 +86,128 @@ export default class TimeSheetTable extends Component {
             { headers: { 'Content-Type': 'application/json' } });
     };
 
-    async getTimesheet(date) {
+    async postTimesheetWorkDay(workday, date) {
+        var newEntry = {}
+        axios.get('http://127.0.0.1:3001/Timesheet/' + date)
+            .then((response) => {
+                // handle success
+                console.log("going into formatting timesheet")
+                newEntry = response.data;
+
+                Object.keys(newEntry).map(function (item, index) {
+                    if (item !== "date") {
+                        newEntry[item]["tasks"].push(workday[item]["tasks"][0]);
+                    }
+                })
+
+                axios.put('http://127.0.0.1:3001/Timesheet/' + date, newEntry)
+                    .then(resp => {
+
+                        console.log("updated timesheet");
+                    }).catch(error => {
+
+                        console.log(error);
+                    });
+
+            })
+            .catch(function (error) {
+                console.log(error);
+                axios.post("http://127.0.0.1:3001/Timesheet",
+                    workday,
+                    { headers: { 'Content-Type': 'application/json' } })
+                    .then(() => {
+                        console.log("posted timesheet entry");
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    })
+            })
+
+    };
+
+    async deleteTimesheetTask(task, date) {
+        var taskList = this.state.timesheetTasks;
+        delete taskList[task];
+
+        var formattedDate = new Date(date);
+        formattedDate.setHours(0)
+        formattedDate.setMinutes(0)
+        formattedDate.setSeconds(0)
+        formattedDate.setMilliseconds(0)
+
+        console.log(date)
+
+        var empty = 0;
+        var newEntry = {};
+        axios.get('http://127.0.0.1:3001/Timesheet/' + formattedDate.toISOString())
+            .then((response) => {
+                // handle success
+                console.log("going into formatting timesheet")
+                newEntry = response.data;
+
+                Object.keys(newEntry).map(function (item, index) {
+                    if (item !== "date") {
+                        Object.keys(newEntry[item]["tasks"]).map(function (taskInList, i) {
+
+                            if (newEntry[item]["tasks"][taskInList]["worktype"] === task) {
+                                console.log("hit")
+                                newEntry[item]["tasks"].splice(i, 1);
+                            }
+                        })
+
+                        if (newEntry[item]["tasks"].length === 0) {
+                            empty += 1;
+                        }
+                    }
+                })
+
+                console.log(empty)
+                if (empty === Object.keys(newEntry).length) {
+                    axios.delete('http://127.0.0.1:3001/Timesheet/' + formattedDate.toISOString())
+                        .then(resp => {
+
+                            console.log("deleted timesheet");
+                        }).catch(error => {
+
+                            console.log(error);
+                        });
+                }
+                else {
+                    axios.put('http://127.0.0.1:3001/Timesheet/' + formattedDate.toISOString(), newEntry)
+                        .then(resp => {
+
+                            console.log("updated timesheet");
+                        }).catch(error => {
+
+                            console.log(error);
+                        });
+                }
+            })
+            .catch(function (error) {
+                console.log(error);
+            })
+
+        this.setState({
+            timesheetTasks: taskList
+        })
+    };
+
+    async getTimesheet(context, date) {
 
         axios.get('http://127.0.0.1:3001/Timesheet/' + date)
             .then((response) => {
                 // handle success
                 console.log("going into formatting timesheet")
-                this.formatTimesheetInfo(response.data)
+                context.formatTimesheetInfo(response.data)
             })
             .catch(function (error) {
                 console.log(error);
+                context.eraseTimesheet(date);
             })
     };
 
     async updateTimesheet(newWorkday, date) {
-        axios.put('http://127.0.0.1:3001/workdays/' + date + '/', newWorkday)
+        axios.put('http://127.0.0.1:3001/workdays/' + date, newWorkday)
             .then(resp => {
 
                 console.log("updated workday");
@@ -97,6 +215,33 @@ export default class TimeSheetTable extends Component {
 
                 console.log(error);
             });
+    }
+
+    async updateTimesheetEntry(task, date, day) {
+        var newEntry = {};
+        axios.get('http://127.0.0.1:3001/Timesheet/' + date)
+            .then((response) => {
+                // handle success
+                console.log("going into formatting timesheet")
+                newEntry = response.data;
+                newEntry[day]["tasks"].map((taskItem, index) => {
+                    if (taskItem["worktype"] === task["worktype"]) {
+                        newEntry[day]["tasks"][index] = task;
+                    }
+                });
+
+                axios.put('http://127.0.0.1:3001/Timesheet/' + date, newEntry)
+                    .then(resp => {
+
+                        console.log("updated workday");
+                    }).catch(error => {
+
+                        console.log(error);
+                    });
+            })
+            .catch(function (error) {
+                console.log(error);
+            })
     }
 
     getDaysOfTheWeek(selectedDate) {
@@ -111,6 +256,22 @@ export default class TimeSheetTable extends Component {
             //   dates.push(nextDay.getFullYear() + "-" + (nextDay.getMonth() + 1) + "-" + nextDay.getDay());
         }
         return dates
+    }
+
+    eraseTimesheet(date) {
+        if (date !== this.state.weekdates[0]) {
+            var totals = this.state.totals;
+            var dates = this.getDaysOfTheWeek(new Date(date));
+            Object.keys(totals).map((entry, index) => {
+                totals[entry] = 0
+            })
+
+            this.setState({
+                totals: totals,
+                timesheetTasks: {},
+                weekdates: dates
+            })
+        }
     }
 
     renderHeader() {
@@ -152,8 +313,9 @@ export default class TimeSheetTable extends Component {
     };
 
     updateTask(index) {
+
         this.setState({
-            message: this.state.workTypes[index]
+            message: this.state.workTypes[index].id
         });
 
     }
@@ -220,6 +382,59 @@ export default class TimeSheetTable extends Component {
 
         var diff = this.calculateWorkHours(start, end);
         this.recalculateHours(today, diff, true);
+    }
+
+    handleAddWork2() {
+        var weekdays = this.state.weekdays;
+        var date = this.setToMonday(new Date());
+        var stringDate = "";
+        var newTaskWeek = {};
+        var workType = this.state.message !== "" ? this.state.message : "NONE"
+        var timesheet = this.state.timesheetTasks;
+
+        date.setHours(0)
+        date.setMinutes(0)
+        date.setSeconds(0)
+        date.setMilliseconds(0)
+
+        stringDate = date.toISOString()
+        var Monday = stringDate;
+        newTaskWeek["date"] = stringDate
+
+        weekdays.map(function (item, index) {
+            newTaskWeek[item] = {
+                "date": stringDate,
+                "vacation": "false",
+                "wid": "1",
+                "tasks": [
+                    {
+                        "end_time": "",
+                        "note": "",
+                        "start_time": "",
+                        "worktype": workType
+                    }
+                ]
+            }
+
+            date.setDate(date.getDate() + 1);
+
+            stringDate = date.toISOString();
+
+        })
+
+        console.log(workType)
+
+        timesheet[workType] = {
+            "worktype": workType
+        };
+
+        console.log(timesheet)
+
+        this.setState({
+            timesheetTasks: timesheet
+        });
+
+        this.postTimesheetWorkDay(newTaskWeek, Monday);
     }
 
     calculateWorkHours(start, end) {
@@ -292,20 +507,30 @@ export default class TimeSheetTable extends Component {
 
                     // console.log(totalWorkHours[item])
 
-                    if (totalWorkHours[item] === undefined) {
-                        totalWorkHours[item] = this.calculateWorkHours(
-                            new Date(task[i]["start_time"]),
-                            new Date(task[i]["end_time"]))
+                    if (task[i]["start_time"] === "" || task[i]["end_time"] === "") {
+                        if (totalWorkHours[item] === undefined) {
+                            totalWorkHours[item] = 0
+                        }
+                        else {
+                            totalWorkHours[item] += 0
+                        }
                     }
                     else {
-                        totalWorkHours[item] += this.calculateWorkHours(
-                            new Date(task[i]["start_time"]),
-                            new Date(task[i]["end_time"]))
+                        if (totalWorkHours[item] === undefined) {
+                            totalWorkHours[item] = this.calculateWorkHours(
+                                new Date(task[i]["start_time"]),
+                                new Date(task[i]["end_time"]))
+                        }
+                        else {
+                            totalWorkHours[item] += this.calculateWorkHours(
+                                new Date(task[i]["start_time"]),
+                                new Date(task[i]["end_time"]))
+                        }
                     }
                 }
             }
         }
-
+        console.log(totalWorkHours)
         this.setState({
             totals: totalWorkHours,
             timesheetTasks: currentTaskList,
@@ -403,7 +628,11 @@ export default class TimeSheetTable extends Component {
     }
 
     setToMonday(date) {
-        var tempDate = new Date(date);
+        var tempDate = date;
+        if (typeof (date) === String) {
+            tempDate = new Date(date);
+        }
+        //var tempDate = new Date(date);
         var day = tempDate.getDay() || 7;
         if (day !== 1)
             tempDate.setHours(-24 * (day - 1));
@@ -464,7 +693,7 @@ export default class TimeSheetTable extends Component {
                                 else if (day === "Delete") {
                                     return (<td className="col-1r">
                                         <button
-                                            onClick={context.handleItemDelete.bind(context, index)}
+                                            onClick={context.deleteTimesheetTask.bind(context, key, weekdates[0])}
                                             className="deleteButton"
                                         >
                                             Delete
@@ -487,7 +716,7 @@ export default class TimeSheetTable extends Component {
 
         let work = [];
         var context = this;
-        this.getDaysOfTheWeek(this.props.calendarDate);
+        //this.getDaysOfTheWeek(this.props.calendarDate);
 
         this.state.workTypes.map((type, i) => {
             work.push(type.id)
@@ -525,7 +754,7 @@ export default class TimeSheetTable extends Component {
                         label="Select End Hour"
                         changeDate={this.changeSecond.bind(this)} />
 
-                    <button className="submitButton" onClick={this.handleAddWork.bind(this)}>
+                    <button className="submitButton" onClick={this.handleAddWork2.bind(this)}>
                         Add
                     </button>
                 </div>
