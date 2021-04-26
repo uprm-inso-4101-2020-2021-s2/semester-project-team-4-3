@@ -174,7 +174,7 @@ class AdminPayStubs extends Component {
         return (
             <Card className={this.useStyles.root}>
                 <CardContent style={{ "marginLeft": 50 }}>
-                    <Typography className={this.useStyles.title} color="textSecondary" gutterBottom>
+                    <Typography className={this.useStyles.title} color="textPrimary" gutterBottom>
                         Employee Information
                     </Typography>
                     <Typography variant="h5" component="h2">
@@ -182,7 +182,7 @@ class AdminPayStubs extends Component {
                     </Typography>
 
                     <div style={{ "marginTop": 15 }}>
-                        <Typography className={this.useStyles.pos} color="textSecondary">
+                        <Typography className={this.useStyles.pos} color="textPrimary">
                             Salary
                         </Typography>
                         <Typography style={{ "marginLeft": 20 }} variant="body2" component="p">
@@ -191,7 +191,7 @@ class AdminPayStubs extends Component {
                     </div>
 
                     <div style={{ "marginTop": 15 }}>
-                        <Typography className={this.useStyles.pos} color="textSecondary">
+                        <Typography className={this.useStyles.pos} color="textPrimary">
                             Deductions
                         </Typography>
                         {employeeInfo[0]["deductions"].map((item, index) => {
@@ -204,7 +204,7 @@ class AdminPayStubs extends Component {
                     </div>
 
                     <div style={{ "marginTop": 15 }}>
-                        <Typography className={this.useStyles.pos} color="textSecondary">
+                        <Typography className={this.useStyles.pos} color="textPrimary">
                             Benefits
                         </Typography>
                         {employeeInfo[0]["benefits"].map((item, index) => {
@@ -215,49 +215,10 @@ class AdminPayStubs extends Component {
                             )
                         })}
                     </div>
-
-                    {/* <Typography variant="body2" component="p">
-                        well meaning and kindly.
-                    <br />
-                        {'"a benevolent smile"'}
-                    </Typography> */}
                 </CardContent>
             </Card>
 
 
-            // <Box component="div" className="employeeInfoContainer">
-            //     <Typography variant="h5" style={{ "marginBottom": 10, "marginTop": 10 }}>Employee Information</Typography>
-
-            //     <div className="item">
-            //         <Typography variant="h6">Name: </Typography>
-            //         <Typography variant="h6" style={{ "marginLeft": 20 }}>{employeeInfo[0]["name"]}</Typography>
-            //     </div>
-
-            //     <div className="item">
-            //         <Typography variant="h6">Salary:</Typography>
-            //         <Typography variant="h6" style={{ "marginLeft": 20 }}>{employeeInfo[0]["salary"]}</Typography>
-            //     </div>
-            //     <div className="item2">
-            //         <Typography variant="h6">Deductions:</Typography>
-            //         {employeeInfo[0]["deductions"].map((item, index) => {
-            //             return (
-            //                 <Typography variant="h6" style={{ "marginLeft": 40 }}>
-            //                     { item["type"]}
-            //                 </Typography>
-            //             )
-            //         })}
-            //     </div>
-            //     <div className="item2">
-            //         <Typography variant="h6">Benefits:</Typography>
-            //         {employeeInfo[0]["benefits"].map((item, index) => {
-            //             return (
-            //                 <Typography variant="h6" style={{ "marginLeft": 40 }}>
-            //                     { item["type"]}
-            //                 </Typography>
-            //             )
-            //         })}
-            //     </div>
-            // </Box>
         )
     }
 

@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import MaterialUIPickers from '../components/calendarPicker';
 import TimeSheetTable from '../components/timesheettable';
 import SimpleSelect from '../components/selectBox';
+import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
 import axios from "axios";
 import '../App.css';
@@ -76,6 +77,9 @@ class Timesheet extends Component {
         return (
             <React.Fragment>
                 <div className="body" >
+                    <Typography className="pageTitle" variant="h4" gutterBottom>
+                        Timesheet
+                    </Typography>
                     <div className="datepickers">
                         {this.compareAdmin()}
                         <MaterialUIPickers

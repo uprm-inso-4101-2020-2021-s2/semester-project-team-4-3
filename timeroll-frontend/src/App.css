@@ -68,6 +68,11 @@
   flex-direction: column;
 }
 
+.createEmployeeContainer{
+  display: flex;
+  flex-direction: column;
+}
+
 .MuiTypography-colorTextSecondary {
   color: #fff;
 }
@@ -113,6 +118,11 @@
 
 .datepickers {
   padding:5px;
+  display: flex;
+  flex-direction: row;
+}
+
+.createEmployeeField {
   display: flex;
   flex-direction: row;
 }

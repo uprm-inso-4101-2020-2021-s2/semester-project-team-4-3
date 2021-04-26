@@ -523,7 +523,19 @@
       "name": "Alistair Therein",
       "date": "alistair@gmail.com",
       "password": "123",
-      "uType": "user"
+      "uType": "user",
+      "salary": "12.50",
+      "deductions": [{
+          "type": "SS",
+          "rate": 50
+      }, {
+          "type": "tax",
+          "rate": 25
+      }],
+      "benefits": [{
+          "type": "medical",
+          "rate": 100
+      }]
     },
     {
       "uid": "2",

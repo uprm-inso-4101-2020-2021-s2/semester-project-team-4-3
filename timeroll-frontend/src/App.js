@@ -5,6 +5,7 @@ import Timesheet from './pages/timesheet';
 import Paystub from './pages/payStubs';
 import Requests from './pages/requests';
 import Login from './pages/login2';
+import Profiles from './pages/profiles';
 import store from 'store';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
 
@@ -29,6 +30,9 @@ const theme = createMuiTheme({
     MuiTypography: {
       colorTextSecondary: {
         color: "#fff"
+      },
+      colorTextPrimary: {
+        color: "#484848"
       }
     }
   }
@@ -90,6 +94,9 @@ class App extends Component {
 
                   <Route path="/requests" render={() => (
                     <Requests {...this.state} isAuthed={true} />
+                  )} />
+                  <Route path="/profiles" render={() => (
+                    <Profiles {...this.state} isAuthed={true} />
                   )} />
                 </div>
 

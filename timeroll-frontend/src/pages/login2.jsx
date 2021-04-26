@@ -19,7 +19,6 @@ const Login = props => {
 
         await axios.get(props.baseUrl + "/" + username)
             .then((response) => {
-                console.log(response.data)
                 // handle success
                 props.history.push('/timesheet');
                 props.setCredentials(response.data, true);

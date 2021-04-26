@@ -171,7 +171,7 @@ const MiniDrawer = props => {
                         <ListItemText primary="Requests" />
                     </ListItem>
 
-                    <ListItem button key="Settings" >
+                    <ListItem button key="Settings" component={Link} to="/profiles" >
                         <ListItemIcon> <FontAwesomeIcon icon={faCog} size='2x' /> </ListItemIcon>
                         <ListItemText primary="Settings" />
                     </ListItem>

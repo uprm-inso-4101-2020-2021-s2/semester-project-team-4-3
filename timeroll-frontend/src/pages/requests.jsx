@@ -83,9 +83,8 @@ class Requests extends Component {
                     <Typography className="pageTitle" variant="h4" gutterBottom>
                         Requests
                     </Typography>
-                    <div className="datepickers">
-                        {this.compareAdmin()}
-                    </div>
+                    {this.compareAdmin()}
+
 
                     {
                         this.state.uType === "admin" ?
