@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import RequestsTable from '../components/requestsTable';
+import AdminRequestsTable from '../components/requestAdminTable';
 import SimpleSelect from '../components/selectBox';
 import Box from '@material-ui/core/Box';
 import Typography from '@material-ui/core/Typography';
@@ -85,7 +86,12 @@ class Requests extends Component {
                     <div className="datepickers">
                         {this.compareAdmin()}
                     </div>
-                    <RequestsTable user={this.state.name} />
+
+                    {
+                        this.state.uType === "admin" ?
+                            <AdminRequestsTable user={this.state.name} /> :
+                            <RequestsTable user={this.state.name} />
+                    }
 
                     <br />
                 </div>

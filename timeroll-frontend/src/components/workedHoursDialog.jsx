@@ -47,6 +47,7 @@ function SimpleDialog(props) {
 
     const changeStart = (hour) => {
         setNewStartHour(hour);
+        console.log("change start hour: " + hour)
         props.changeStart(hour);
     };
 
@@ -117,6 +118,7 @@ export default class SimpleDialogDemo extends Component {
             open: false,
             newStartHour: start,
             newEndHour: end,
+            oldTotal: total,
             totals: total,
             day: props.day,
             date: props.info.date,
@@ -161,8 +163,6 @@ export default class SimpleDialogDemo extends Component {
     };
 
     handleClose = (submit, start, end) => {
-        console.log(start)
-        console.log(end)
         var total = this.calculateWorkHours(start, end)
         console.log("total: " + total)
 
@@ -174,7 +174,8 @@ export default class SimpleDialogDemo extends Component {
                 start,
                 end,
                 this.props.task,
-                total);
+                total,
+                this.state.oldTotal);
         }
         var state = Boolean(false)
         this.setState({

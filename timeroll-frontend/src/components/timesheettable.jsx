@@ -224,7 +224,7 @@ export default class TimeSheetTable extends Component {
                 // handle success
                 console.log("going into formatting timesheet")
                 newEntry = response.data;
-                newEntry[day]["tasks"].map((taskItem, index) => {
+                (newEntry[day]["tasks"]).map((taskItem, index) => {
                     if (taskItem["worktype"] === task["worktype"]) {
                         newEntry[day]["tasks"][index] = task;
                     }
@@ -279,7 +279,6 @@ export default class TimeSheetTable extends Component {
         var weekDays = this.state.weekdays;
         var months = this.state.months;
         var formattedDate;
-
 
         return (
             <tr className="table-header">
@@ -381,7 +380,7 @@ export default class TimeSheetTable extends Component {
         });
 
         var diff = this.calculateWorkHours(start, end);
-        this.recalculateHours(today, diff, true);
+        this.recalculateHours(today, diff, 0);
     }
 
     handleAddWork2() {
@@ -446,8 +445,14 @@ export default class TimeSheetTable extends Component {
     recalculateHours(workday, hour, oldHour) {
         var totals = this.state.totals;
 
+        if (typeof (oldHour) === 'string') {
+            oldHour = 0
+        }
+
         totals[workday] = (totals[workday] - oldHour) + hour;
-        totals[workday].toFixed(2);
+        console.log(totals[workday]);
+
+        (totals[workday]).toFixed(2);
 
         this.setState({
             totals: totals
@@ -610,10 +615,21 @@ export default class TimeSheetTable extends Component {
         });
     }
 
-    editWorkDayHours(date, note, weekday, startTime, endTime, type, oldWorkHourTotal) {
-        var workHours = this.calculateWorkHours(startTime, endTime)
+    formatISOString(day) {
+        var temp = new Date(day);
+        temp.setSeconds(0);
+        temp.setHours(0);
+        temp.setMinutes(0);
+        temp.setMilliseconds(0);
+        return temp;
+    }
 
-        console.log("date: " + date)
+    editWorkDayHours(date, note, weekday, startTime, endTime, type, newTotal, oldWorkHourTotal) {
+        //  var workHours = this.calculateWorkHours(startTime, endTime)
+        console.log("workhours: " + newTotal + ", oldworkhours: " + oldWorkHourTotal)
+        var monday = this.setToMonday(date);
+        console.log(weekday)
+        monday = this.formatISOString(monday).toISOString()
 
         var newWorkDay = {
             "date": date,
@@ -623,13 +639,13 @@ export default class TimeSheetTable extends Component {
             "type": type
         }
 
-        this.updateTimesheet(newWorkDay, date)
-        this.recalculateHours(weekday, workHours, oldWorkHourTotal)
+        this.updateTimesheetEntry(newWorkDay, monday, weekday)
+        this.recalculateHours(weekday, newTotal, oldWorkHourTotal)
     }
 
     setToMonday(date) {
         var tempDate = date;
-        if (typeof (date) === String) {
+        if (typeof (date) === 'string') {
             tempDate = new Date(date);
         }
         //var tempDate = new Date(date);
