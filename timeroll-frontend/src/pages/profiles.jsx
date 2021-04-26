@@ -94,8 +94,14 @@ class Profiles extends Component {
     compareAdmin() {
         if (this.state.uType === "admin") {
             return (
-                <Box component="div" style={{ "margin": 20 }}>
+                <Box component="div" style={{ "margin": 20, "display": "flex", "flexDirection": "row" }}>
                     <SimpleSelect style={{ "margin": 20 }} items={this.state.employees} label="Employee" onSelectBoxItemChange={this.onSelectBoxItemChange.bind(this)} />
+                    <button className="deleteButton" style={{ "marginLeft": 20, "marginTop": 10, "width": 110 }}>
+                        Delete Employee
+                    </button>
+                    <button className="editButton" style={{ "marginLeft": 20, "marginTop": 10, "width": 110 }}>
+                        Edit Employee
+                    </button>
                 </Box>
             );
         }
@@ -119,10 +125,20 @@ class Profiles extends Component {
                             <div>
                                 <Typography className={this.useStyles.title} color="textPrimary" gutterBottom>
                                     Employee Name
-                            </Typography>
+                                </Typography>
                                 <TextField
                                     style={{ "margin": 20, "marginBottom": 10, "width": 350 }}
                                     label="Name"
+                                    variant="outlined"
+                                    className="form-input"
+                                />
+
+                                <Typography className={this.useStyles.title} color="textPrimary" gutterBottom>
+                                    User name (email):
+                                </Typography>
+                                <TextField
+                                    style={{ "margin": 20, "marginBottom": 10, "width": 350 }}
+                                    label="Username"
                                     variant="outlined"
                                     className="form-input"
                                 />
