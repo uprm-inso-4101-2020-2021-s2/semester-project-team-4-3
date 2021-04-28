@@ -312,11 +312,9 @@ export default class TimeSheetTable extends Component {
     };
 
     updateTask(index) {
-
         this.setState({
             message: this.state.workTypes[index].id
         });
-
     }
 
     handleClick() {
@@ -450,9 +448,9 @@ export default class TimeSheetTable extends Component {
         }
 
         totals[workday] = (totals[workday] - oldHour) + hour;
-        console.log(totals[workday]);
+        console.log("Totals: " + totals[workday]);
 
-        (totals[workday]).toFixed(2);
+        Number(totals[workday]).toFixed(2);
 
         this.setState({
             totals: totals
@@ -761,14 +759,14 @@ export default class TimeSheetTable extends Component {
                         <SimpleSelect items={work} label="Task Codes" onSelectBoxItemChange={this.updateTask.bind(this)} />
                     </Box>
 
-                    <TimePicker
+                    {/* <TimePicker
                         hour={this.state.start_hour}
                         label="Select Start Hour"
                         changeDate={this.changeFirst.bind(this)} />
                     <TimePicker
                         hour={this.state.end_hour}
                         label="Select End Hour"
-                        changeDate={this.changeSecond.bind(this)} />
+                        changeDate={this.changeSecond.bind(this)} /> */}
 
                     <button className="submitButton" onClick={this.handleAddWork2.bind(this)}>
                         Add

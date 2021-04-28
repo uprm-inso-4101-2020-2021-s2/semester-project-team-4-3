@@ -7,7 +7,7 @@ import Divider from '@material-ui/core/Divider';
 import '../App.css';
 import { makeStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
-import CardActions from '@material-ui/core/CardActions';
+import axios from "axios";
 import CardContent from '@material-ui/core/CardContent';
 import Button from '@material-ui/core/Button';
 
@@ -22,6 +22,7 @@ class AdminPayStubs extends Component {
         this.state = {
             headers: ["hours", "gross", "deductions", "benefits", "net"],
             employeeNames: employeeNames,
+            allEmployees: [],
             index: 0,
             months: ["January",
                 "February",
@@ -42,22 +43,19 @@ class AdminPayStubs extends Component {
                 "benefits": 50,
                 "net": 1644
             },
-            employeeInfo: [{
-                "name": "Cullen Rutherford",
-                "salary": "12.50",
-                "deductions": [{
-                    "type": "SS",
-                    "rate": 50
-                }, {
-                    "type": "tax",
-                    "rate": 25
-                }],
-                "benefits": [{
-                    "type": "medical",
-                    "rate": 100
-                }]
-            }]
+            employeeInfo: {
+                "name": "",
+                "salary": "",
+                "deductions": [],
+                "benefits": []
+            }
         }
+    }
+
+    componentDidMount() {
+
+        this.getAllEmployees();
+
     }
 
     useStyles = makeStyles({
@@ -84,12 +82,66 @@ class AdminPayStubs extends Component {
         }
     });
 
+    async getAllEmployees() {
+
+        await axios.get('http://127.0.0.1:3001/Employees')
+            .then((response) => {
+                // handle success
+
+                var employees = [];
+                for (var i in response.data) {
+                    if (response.data[i]["name"] !== this.state.name) {
+                        employees.push(response.data[i]["name"]);
+                    }
+                }
+
+                this.setState({
+                    employees: employees,
+                    allEmployees: response.data
+                })
+            })
+            .catch(function (error) {
+                console.log(error);
+            })
+    };
+
+    async getEmployee(email) {
+        await axios.get('http://127.0.0.1:3001/Employees/' + email)
+            .then((response) => {
+                // handle success
+
+                this.setState({
+                    employeeInfo: response.data,
+                    email: email
+                })
+            })
+            .catch(function (error) {
+                console.log(error);
+            })
+    };
+
     onSelectBoxItemChange(item) {
-        console.log(item);
-        this.setState({
-            index: item
-        });
+        var email = ""
+        var name = this.state.employees[item]
+        console.log(this.state.allEmployees)
+
+        for (item in this.state.allEmployees) {
+            console.log("item: ", item)
+            if (this.state.allEmployees[item]["name"] === name) {
+                email = this.state.allEmployees[item]["date"]
+                break;
+            }
+        }
+
+        this.getEmployee(email);
     }
+
+    // onSelectBoxItemChange(item) {
+    //     console.log(item);
+    //     this.setState({
+    //         index: item
+    //     });
+    // }
 
 
     setCalendarDate(date) {
@@ -178,7 +230,7 @@ class AdminPayStubs extends Component {
                         Employee Information
                     </Typography>
                     <Typography variant="h5" component="h2">
-                        {employeeInfo[0]["name"]}
+                        {employeeInfo["name"]}
                     </Typography>
 
                     <div style={{ "marginTop": 15 }}>
@@ -186,7 +238,7 @@ class AdminPayStubs extends Component {
                             Salary
                         </Typography>
                         <Typography style={{ "marginLeft": 20 }} variant="body2" component="p">
-                            {employeeInfo[0]["salary"]}
+                            {employeeInfo["salary"]}
                         </Typography>
                     </div>
 
@@ -194,7 +246,7 @@ class AdminPayStubs extends Component {
                         <Typography className={this.useStyles.pos} color="textPrimary">
                             Deductions
                         </Typography>
-                        {employeeInfo[0]["deductions"].map((item, index) => {
+                        {employeeInfo["deductions"].map((item, index) => {
                             return (
                                 <Typography style={{ "marginLeft": 20 }} variant="body2" component="p">
                                     { item["type"]}
@@ -207,7 +259,7 @@ class AdminPayStubs extends Component {
                         <Typography className={this.useStyles.pos} color="textPrimary">
                             Benefits
                         </Typography>
-                        {employeeInfo[0]["benefits"].map((item, index) => {
+                        {employeeInfo["benefits"].map((item, index) => {
                             return (
                                 <Typography style={{ "marginLeft": 20 }} variant="body2" component="p">
                                     { item["type"]}
@@ -235,6 +287,7 @@ class AdminPayStubs extends Component {
                                 style={{ "margin": 10 }}
                                 items={this.state.employeeNames}
                                 label="Employee"
+                                defaultValue={this.state.employeeNames[0]}
                                 onSelectBoxItemChange={this.onSelectBoxItemChange.bind(this)} />
                         </Box>
                         <MaterialUIPickers calendarDate={this.state.calendarDate} setCalendarDate={this.setCalendarDate.bind(this)} />

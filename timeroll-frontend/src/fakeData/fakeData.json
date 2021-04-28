@@ -430,6 +430,303 @@
           }
         ]
       }
+    },
+    {
+      "date": "2021-04-26T04:00:00.000Z",
+      "Monday": {
+        "date": "2021-04-26T04:00:00.000Z",
+        "vacation": "false",
+        "wid": "1",
+        "tasks": [
+          {
+            "end_time": "",
+            "note": "",
+            "start_time": "",
+            "worktype": "SECRT"
+          },
+          {
+            "end_time": "",
+            "note": "",
+            "start_time": "",
+            "worktype": "SECRT"
+          },
+          {
+            "end_time": "",
+            "note": "",
+            "start_time": "",
+            "worktype": "SECRT"
+          },
+          {
+            "end_time": "",
+            "note": "",
+            "start_time": "",
+            "worktype": "LABTR"
+          },
+          {
+            "end_time": "",
+            "note": "",
+            "start_time": "",
+            "worktype": "LABTR"
+          },
+          {
+            "end_time": "",
+            "note": "",
+            "start_time": "",
+            "worktype": "SECRT"
+          },
+          {
+            "end_time": "",
+            "note": "",
+            "start_time": "",
+            "worktype": "LABTR"
+          }
+        ]
+      },
+      "Tuesday": {
+        "date": "2021-04-27T04:00:00.000Z",
+        "vacation": "false",
+        "wid": "1",
+        "tasks": [
+          {
+            "end_time": "",
+            "note": "",
+            "start_time": "",
+            "worktype": "SECRT"
+          },
+          {
+            "end_time": "",
+            "note": "",
+            "start_time": "",
+            "worktype": "SECRT"
+          },
+          {
+            "end_time": "",
+            "note": "",
+            "start_time": "",
+            "worktype": "SECRT"
+          },
+          {
+            "end_time": "",
+            "note": "",
+            "start_time": "",
+            "worktype": "LABTR"
+          },
+          {
+            "end_time": "",
+            "note": "",
+            "start_time": "",
+            "worktype": "LABTR"
+          },
+          {
+            "end_time": "",
+            "note": "",
+            "start_time": "",
+            "worktype": "SECRT"
+          },
+          {
+            "end_time": "",
+            "note": "",
+            "start_time": "",
+            "worktype": "LABTR"
+          }
+        ]
+      },
+      "Wednesday": {
+        "date": "2021-04-28T04:00:00.000Z",
+        "vacation": "false",
+        "wid": "1",
+        "tasks": [
+          {
+            "end_time": "",
+            "note": "",
+            "start_time": "",
+            "worktype": "SECRT"
+          },
+          {
+            "end_time": "",
+            "note": "",
+            "start_time": "",
+            "worktype": "SECRT"
+          },
+          {
+            "end_time": "",
+            "note": "",
+            "start_time": "",
+            "worktype": "SECRT"
+          },
+          {
+            "end_time": "",
+            "note": "",
+            "start_time": "",
+            "worktype": "LABTR"
+          },
+          {
+            "end_time": "",
+            "note": "",
+            "start_time": "",
+            "worktype": "LABTR"
+          },
+          {
+            "end_time": "",
+            "note": "",
+            "start_time": "",
+            "worktype": "SECRT"
+          },
+          {
+            "end_time": "",
+            "note": "",
+            "start_time": "",
+            "worktype": "LABTR"
+          }
+        ]
+      },
+      "Thursday": {
+        "date": "2021-04-29T04:00:00.000Z",
+        "vacation": "false",
+        "wid": "1",
+        "tasks": [
+          {
+            "end_time": "",
+            "note": "",
+            "start_time": "",
+            "worktype": "SECRT"
+          },
+          {
+            "end_time": "",
+            "note": "",
+            "start_time": "",
+            "worktype": "SECRT"
+          },
+          {
+            "end_time": "",
+            "note": "",
+            "start_time": "",
+            "worktype": "SECRT"
+          },
+          {
+            "end_time": "",
+            "note": "",
+            "start_time": "",
+            "worktype": "LABTR"
+          },
+          {
+            "end_time": "",
+            "note": "",
+            "start_time": "",
+            "worktype": "LABTR"
+          },
+          {
+            "end_time": "",
+            "note": "",
+            "start_time": "",
+            "worktype": "SECRT"
+          },
+          {
+            "end_time": "",
+            "note": "",
+            "start_time": "",
+            "worktype": "LABTR"
+          }
+        ]
+      },
+      "Friday": {
+        "date": "2021-04-30T04:00:00.000Z",
+        "vacation": "false",
+        "wid": "1",
+        "tasks": [
+          {
+            "end_time": "",
+            "note": "",
+            "start_time": "",
+            "worktype": "SECRT"
+          },
+          {
+            "end_time": "",
+            "note": "",
+            "start_time": "",
+            "worktype": "SECRT"
+          },
+          {
+            "end_time": "",
+            "note": "",
+            "start_time": "",
+            "worktype": "SECRT"
+          },
+          {
+            "end_time": "",
+            "note": "",
+            "start_time": "",
+            "worktype": "LABTR"
+          },
+          {
+            "end_time": "",
+            "note": "",
+            "start_time": "",
+            "worktype": "LABTR"
+          },
+          {
+            "end_time": "",
+            "note": "",
+            "start_time": "",
+            "worktype": "SECRT"
+          },
+          {
+            "end_time": "",
+            "note": "",
+            "start_time": "",
+            "worktype": "LABTR"
+          }
+        ]
+      },
+      "Saturday": {
+        "date": "2021-05-01T04:00:00.000Z",
+        "vacation": "false",
+        "wid": "1",
+        "tasks": [
+          {
+            "end_time": "",
+            "note": "",
+            "start_time": "",
+            "worktype": "SECRT"
+          },
+          {
+            "end_time": "",
+            "note": "",
+            "start_time": "",
+            "worktype": "SECRT"
+          },
+          {
+            "end_time": "",
+            "note": "",
+            "start_time": "",
+            "worktype": "SECRT"
+          },
+          {
+            "end_time": "",
+            "note": "",
+            "start_time": "",
+            "worktype": "LABTR"
+          },
+          {
+            "end_time": "",
+            "note": "",
+            "start_time": "",
+            "worktype": "LABTR"
+          },
+          {
+            "end_time": "",
+            "note": "",
+            "start_time": "",
+            "worktype": "SECRT"
+          },
+          {
+            "end_time": "",
+            "note": "",
+            "start_time": "",
+            "worktype": "LABTR"
+          }
+        ]
+      }
     }
   ],
   "workdays": [
@@ -525,17 +822,22 @@
       "password": "123",
       "uType": "user",
       "salary": "12.50",
-      "deductions": [{
+      "deductions": [
+        {
           "type": "SS",
           "rate": 50
-      }, {
+        },
+        {
           "type": "tax",
           "rate": 25
-      }],
-      "benefits": [{
+        }
+      ],
+      "benefits": [
+        {
           "type": "medical",
           "rate": 100
-      }]
+        }
+      ]
     },
     {
       "uid": "2",
@@ -543,6 +845,66 @@
       "date": "cullen@gmail.com",
       "password": "321",
       "uType": "admin"
+    },
+    {
+      "name": "test2",
+      "date": "n1gOX8-",
+      "password": "",
+      "uType": "user",
+      "salary": "5",
+      "deductions": [
+        {
+          "type": "SS"
+        }
+      ],
+      "benefits": [
+        {
+          "type": "Life insurance"
+        }
+      ]
+    },
+    {
+      "name": "test3",
+      "date": "sdf",
+      "password": "asdf",
+      "uType": "user",
+      "salary": "asdf",
+      "deductions": [
+        {
+          "type": "SS"
+        },
+        {
+          "type": "Tax"
+        }
+      ],
+      "benefits": [
+        {
+          "type": "Medical"
+        },
+        {
+          "type": "Life insurance"
+        }
+      ]
+    },
+    {
+      "name": "victor rodriguez",
+      "date": "victor@gmail.com",
+      "password": "456",
+      "uType": "user",
+      "salary": "11.00",
+      "deductions": [
+        {
+          "type": "SS"
+        },
+        {
+          "type": "Tax"
+        }
+      ],
+      "benefits": [
+        {
+          "type": "Medical"
+        }
+      ]
     }
   ],
   "Requests": [

@@ -73,7 +73,7 @@ function SimpleDialog(props) {
                     hour={newStartHour}
                     changeDate={changeStart} />
 
-                <TimePicker className={classes.timePickers} label="Start Hour"
+                <TimePicker className={classes.timePickers} label="End Hour"
                     hour={newEndHour}
                     changeDate={changeEnd} />
 
